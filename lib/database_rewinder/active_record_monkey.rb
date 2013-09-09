@@ -1,0 +1,17 @@
+module DatabaseRewinder
+  module InsertRecorder
+    def execute(sql, *)
+      DatabaseRewinder.record_inserted_table self, sql
+      super
+    end
+
+    def exec_query(sql, *)
+      DatabaseRewinder.record_inserted_table self, sql
+      super
+    end
+  end
+end
+
+::ActiveRecord::ConnectionAdapters::SQLite3Adapter.send :prepend, DatabaseRewinder::InsertRecorder if defined? ::ActiveRecord::ConnectionAdapters::SQLite3Adapter
+::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.send :prepend, DatabaseRewinder::InsertRecorder if defined? ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter
+::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter.send :prepend, DatabaseRewinder::InsertRecorder if defined? ::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter
