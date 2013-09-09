@@ -7,9 +7,9 @@ Gem::Specification.new do |spec|
   spec.version       = '0.0.1'
   spec.authors       = ["Akira Matsuda"]
   spec.email         = ["ronnie@dio.jp"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = "A minimalist's tiny and ultra-fast database cleaner"
+  spec.summary       = "A minimalist's tiny and ultra-fast database cleaner"
+  spec.homepage      = 'https://github.com/amatsuda/database_rewinder'
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
