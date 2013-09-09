@@ -1,5 +1,3 @@
-require "database_rewinder/version"
-
 module DatabaseRewinder
-  # Your code goes here...
+  VERSION = Gem.loaded_specs['database_rewinder'].version.to_s
 end

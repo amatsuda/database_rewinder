@@ -1,11 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'database_rewinder/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "database_rewinder"
-  spec.version       = DatabaseRewinder::VERSION
+  spec.version       = '0.0.1'
   spec.authors       = ["Akira Matsuda"]
   spec.email         = ["ronnie@dio.jp"]
   spec.description   = %q{TODO: Write a gem description}
