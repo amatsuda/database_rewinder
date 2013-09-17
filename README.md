@@ -49,7 +49,7 @@ end
 ### Pro Tip
 
 database\_rewinder is designed to be almost compatible with database\_cleaner.
-So the following code will probably let your existing app work under database\_rewinder without making any change on your cofiguration.
+So the following code will probably let your existing app work under database\_rewinder without making any change on your configuration.
 
 ```ruby
 DatabaseCleaner = DatabaseRewinder
