@@ -32,12 +32,14 @@ And then execute:
 
 ## Usage
 
-Do `clean_all` in `before(:suite)`, and `clean` in `after(:each)`.
+Do `clean` in `after(:each)`. And do `clean_all` or `clean_with` in `before(:suite)` if you'd like to.
 
 ```ruby
 RSpec.configure do |config|
   config.before :suite do
     DatabaseRewinder.clean_all
+    # or
+    # DatabaseRewinder.clean_with :any_arg_that_would_be_actually_ignored_anyway
   end
 
   config.after :each do
