@@ -37,7 +37,7 @@ module DatabaseRewinder
       database = connection.instance_variable_get(:'@config')[:database]
       cleaner = cleaners.detect {|c| c.db == database} or return
 
-      match = sql.match(/\AINSERT INTO [`"]?([^\s`"]+)[`"]?/)
+      match = sql.match(/\AINSERT INTO [`"]?([^\s`"]+)[`"]?/i)
       table = match[1] if match
       if table
         cleaner.inserted_tables << table unless cleaner.inserted_tables.include? table
