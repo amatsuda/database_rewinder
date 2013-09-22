@@ -14,6 +14,10 @@ database\_rewinder memorizes every table name into which `INSERT` SQL was perfor
 Then it executes `DELETE` SQL only against these tables when cleaning.
 So, the more you have number of tables in your database, the more benefit you will get.
 
+### Credit
+
+This strategy was originally devised and implemented by @eudoxa.
+
 ## Supported versions
 
 * ActiveRecord 3.2, 4.0, 4.1
