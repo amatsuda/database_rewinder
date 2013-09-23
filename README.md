@@ -12,7 +12,7 @@ database\_rewinder is a minimalist's tiny and ultra-fast database cleaner.
 
 database\_rewinder memorizes every table name into which `INSERT` SQL was performed during each test case.
 Then it executes `DELETE` SQL only against these tables when cleaning.
-So, the more you have number of tables in your database, the more benefit you will get.
+So, the more number of tables you have in your database, the more benefit you will get.
 
 ### Credit
 
