@@ -34,8 +34,15 @@ module DatabaseRewinder
     end
 
     def record_inserted_table(connection, sql)
-      database = connection.instance_variable_get(:'@config')[:database]
-      cleaner = cleaners.detect {|c| c.db == database} or return
+      config = connection.instance_variable_get(:'@config')
+      database = config[:database]
+      cleaner = cleaners.detect do |c|
+        if (config[:adapter] == 'sqlite3') && (config[:database] != ':memory:')
+          File.expand_path(c.db, Rails.root) == File.expand_path(database, Rails.root)
+        else
+          c.db == database
+        end
+      end or return
 
       match = sql.match(/\AINSERT INTO [`"]?([^\s`"]+)[`"]?/i)
       table = match[1] if match
