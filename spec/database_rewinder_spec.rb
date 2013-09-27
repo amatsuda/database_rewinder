@@ -16,11 +16,10 @@ describe DatabaseRewinder do
     before do
       DatabaseRewinder.instance_variable_set :'@db_config', {'foo' => {'adapter' => 'sqlite3', 'database' => 'db/test.sqlite3'}}
       @cleaner = DatabaseRewinder.create_cleaner 'foo'
-      @tmp_config = Foo.connection.instance_variable_get :'@config'
-      Foo.connection.instance_variable_set :'@config', {adapter: 'sqlite3', database: File.expand_path('db/test.sqlite3', Rails.root) }
-      DatabaseRewinder.record_inserted_table(Foo.connection, 'INSERT INTO "foos" ("name") VALUES (?)')
+      connection = double('connection').as_null_object
+      connection.instance_variable_set :'@config', {adapter: 'sqlite3', database: File.expand_path('db/test.sqlite3', Rails.root) }
+      DatabaseRewinder.record_inserted_table(connection, 'INSERT INTO "foos" ("name") VALUES (?)')
     end
-    after { Foo.connection.instance_variable_set :'@config', @tmp_config }
     subject { @cleaner }
 
     its(:inserted_tables) { should == ['foos'] }
