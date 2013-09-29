@@ -3,6 +3,7 @@ require 'active_record/railtie'
 module DatabaseRewinderTestApp
   Application = Class.new(Rails::Application) do
     # Rais.root
+    __dir__ ||= File.dirname(__FILE__)
     config.root = __dir__
 
     config.eager_load = false

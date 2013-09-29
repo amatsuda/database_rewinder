@@ -1,27 +1,24 @@
-require_relative 'database_rewinder/cleaner'
+if RUBY_VERSION >= '2.0.0'
+  require_relative 'database_rewinder/cleaner'
+  require_relative 'database_rewinder/cleaner_creation'
+  require_relative 'database_rewinder/database_cleaner_compat'
+else
+  require_relative 'database_rewinder/1.9.3/cleaner'
+  require_relative 'database_rewinder/1.9.3/cleaner_creation'
+  require_relative 'database_rewinder/1.9.3/database_cleaner_compat'
+end
 require_relative 'database_rewinder/railtie'
 
 module DatabaseRewinder
   VERSION = Gem.loaded_specs['database_rewinder'].version.to_s
 
   class << self
+    include DatabaseRewinder::CleanerCreation
+    include DatabaseRewinder::DatabaseCleanerCompat
+
     def init
       @cleaners, @table_names_cache, @clean_all, @only, @except = [], {}, false
       @db_config = YAML::load(ERB.new(Rails.root.join('config/database.yml').read).result)
-    end
-
-    def create_cleaner(connection_name)
-      config = @db_config[connection_name] or raise %Q[Database configuration named "#{connection_name}" is not configured.]
-
-      Cleaner.new(db: config['database'], connection_name: connection_name, only: @only, except: @except).tap {|c| @cleaners << c}
-    end
-
-    def [](_orm, connection: nil, **)
-      if (cl = @cleaners.detect {|c| c.connection_name == connection})
-        return cl
-      end
-
-      create_cleaner connection
     end
 
     def all=(v)
@@ -64,15 +61,8 @@ module DatabaseRewinder
       cleaners.each {|c| c.clean_all}
     end
 
-    # for database_cleaner compat
     def clean_with(*args)
       cleaners.each {|c| c.clean_with *args}
-    end
-
-    # for database_cleaner compat
-    def start; end
-    def strategy=(_strategy, only: nil, except: nil, **)
-      @only, @except = only, except
     end
 
     # cache AR connection.tables
