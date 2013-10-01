@@ -29,9 +29,10 @@ module DatabaseRewinder
     end
 
     # for database_cleaner compat
-    def strategy=(_strategy, only: nil, except: nil, **)
-      @only += Array(only) unless only.blank?
-      @except += Array(except) unless except.blank?
+    def strategy=(args)
+      options = args.is_a?(Array) ? args.extract_options! : {}
+      @only += Array(options[:only]) unless options[:only].blank?
+      @except += Array(options[:except]) unless options[:except].blank?
     end
 
     private
