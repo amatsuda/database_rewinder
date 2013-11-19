@@ -1,8 +1,9 @@
+require_relative 'database_rewinder/version'
 require_relative 'database_rewinder/cleaner'
 require_relative 'database_rewinder/railtie'
 
 module DatabaseRewinder
-  VERSION = Gem.loaded_specs['database_rewinder'].version.to_s
+  VERSION = DatabaseRewinder::VERSION
 
   class << self
     def init

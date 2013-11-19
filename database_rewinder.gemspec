@@ -1,10 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'database_rewinder/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "database_rewinder"
-  spec.version       = '0.0.2'
+  spec.version       = DatabaseRewinder::VERSION
   spec.authors       = ["Akira Matsuda"]
   spec.email         = ["ronnie@dio.jp"]
   spec.description   = "A minimalist's tiny and ultra-fast database cleaner"
