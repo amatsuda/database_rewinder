@@ -34,6 +34,10 @@ module DatabaseRewinder
       @except += Array(except) unless except.blank?
     end
 
+    def reset
+      @inserted_tables = []
+    end
+
     private
     def delete_all(ar_conn, tables)
       tables = tables & @only if @only.any?
@@ -45,10 +49,6 @@ module DatabaseRewinder
           ar_conn.execute "DELETE FROM #{ar_conn.quote_table_name(table_name)};"
         end
       end
-    end
-
-    def reset
-      @inserted_tables = []
     end
   end
 end

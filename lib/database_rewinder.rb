@@ -70,7 +70,10 @@ module DatabaseRewinder
     end
 
     # for database_cleaner compat
-    def start; end
+    def start
+      cleaners.each { |c| c.reset }
+    end
+
     def strategy=(_strategy, only: nil, except: nil, **)
       @only, @except = only, except
     end
