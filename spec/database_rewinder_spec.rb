@@ -36,4 +36,18 @@ describe DatabaseRewinder do
       Bar.count.should == 0
     end
   end
+
+  describe '.clean_all' do
+    before do
+      ActiveRecord::SchemaMigration.create_table
+      ActiveRecord::SchemaMigration.create! version: '001'
+      Foo.create! name: 'foo1'
+      DatabaseRewinder.clean_all
+    end
+    after { ActiveRecord::SchemaMigration.drop_table }
+    it 'should clean except schema_migrations' do
+      Foo.count.should == 0
+      ActiveRecord::SchemaMigration.count.should == 1
+    end
+  end
 end
