@@ -71,8 +71,9 @@ module DatabaseRewinder
 
     # for database_cleaner compat
     def start; end
-    def strategy=(_strategy, only: nil, except: nil, **)
-      @only, @except = only, except
+    def strategy=(args)
+      options = args.is_a?(Array) ? args.extract_options! : {}
+      @only, @except = options[:only], options[:except]
     end
 
     # cache AR connection.tables
