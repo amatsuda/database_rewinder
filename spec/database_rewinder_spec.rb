@@ -51,6 +51,35 @@ describe DatabaseRewinder do
     end
   end
 
+  describe '.clean_with' do
+    before do
+      @cleaner = DatabaseRewinder.cleaners.first
+      @only = @cleaner.instance_variable_get(:@only)
+      @except = @cleaner.instance_variable_get(:@except)
+      Foo.create! name: 'foo1'
+      Bar.create! name: 'bar1'
+      DatabaseRewinder.clean_with :truncation, options
+    end
+
+    context 'with only option' do
+      let(:options) { { only: ['foos'] } }
+      it 'should clean with only option and restore original one' do
+        Foo.count.should == 0
+        Bar.count.should == 1
+        expect(@cleaner.instance_variable_get(:@only)).to eq(@only)
+      end
+    end
+
+    context 'with except option' do
+      let(:options) { { except: ['bars'] } }
+      it 'should clean with except option and restore original one' do
+        Foo.count.should == 0
+        Bar.count.should == 1
+        expect(@cleaner.instance_variable_get(:@except)).to eq(@except)
+      end
+    end
+  end
+
   describe '.strategy=' do
     context 'when no option is specified' do
       before { described_class.strategy = :truncate }
