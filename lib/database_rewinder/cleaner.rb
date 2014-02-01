@@ -25,7 +25,7 @@ module DatabaseRewinder
     def clean_with(_strategy, only: nil, except: nil, **)
       originals = @only, @except
       @only, @except = Array(only), Array(except)
-      clean_all
+      clean
       @only, @except = originals
     end
 
