@@ -11,4 +11,7 @@ RSpec.configure do |config|
   config.before :all do
     CreateAllTables.up unless ActiveRecord::Base.connection.table_exists? 'foos'
   end
+  config.after :each do
+    [Foo, Bar, Baz].each{|m| m.delete_all }
+  end
 end
