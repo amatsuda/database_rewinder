@@ -8,8 +8,7 @@ module DatabaseRewinder
     end
 
     def clean
-      return unless pool
-      return if inserted_tables.empty?
+      return if !pool || inserted_tables.empty?
 
       delete_all (ar_conn = pool.connection), DatabaseRewinder.all_table_names(ar_conn) & inserted_tables
       reset
