@@ -16,9 +16,9 @@ module DatabaseRewinder
     end
 
     def clean_all
-      return unless pool
+      ar_conn = pool ? pool.connection : ActiveRecord::Base.connection
 
-      delete_all (ar_conn = pool.connection), DatabaseRewinder.all_table_names(ar_conn)
+      delete_all ar_conn, DatabaseRewinder.all_table_names(ar_conn)
       reset
     end
 
