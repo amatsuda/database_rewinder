@@ -20,14 +20,6 @@ module DatabaseRewinder
       reset
     end
 
-    def with_automatic_reconnect(pool, &block)
-      reconnect = pool.automatic_reconnect
-      pool.automatic_reconnect = true
-      block.call
-    ensure
-      pool.automatic_reconnect = reconnect
-    end
-
     def clean_all
       ar_conn = pool ? pool.connection : ActiveRecord::Base.connection
 
@@ -63,6 +55,14 @@ module DatabaseRewinder
 
     def reset
       @inserted_tables = []
+    end
+
+    def with_automatic_reconnect(pool, &block)
+      reconnect = pool.automatic_reconnect
+      pool.automatic_reconnect = true
+      block.call
+    ensure
+      pool.automatic_reconnect = reconnect
     end
   end
 end
