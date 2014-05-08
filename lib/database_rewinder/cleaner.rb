@@ -10,8 +10,22 @@ module DatabaseRewinder
     def clean
       return if !pool || inserted_tables.empty?
 
-      delete_all (ar_conn = pool.connection), DatabaseRewinder.all_table_names(ar_conn) & inserted_tables
+      # When the application uses multiple database connections, a connection
+      # pool used in test could be already removed (i.e., pool.connected? = false).
+      # In this case, we have to reconnect to the database to clean inserted
+      # tables.
+      with_automatic_reconnect(pool) do
+        delete_all (ar_conn = pool.connection), DatabaseRewinder.all_table_names(ar_conn) & inserted_tables
+      end
       reset
+    end
+
+    def with_automatic_reconnect(pool, &block)
+      reconnect = pool.automatic_reconnect
+      pool.automatic_reconnect = true
+      block.call
+    ensure
+      pool.automatic_reconnect = reconnect
     end
 
     def clean_all
