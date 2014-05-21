@@ -28,9 +28,10 @@ module DatabaseRewinder
     end
 
     def clean_with(_strategy, only: nil, except: nil, **)
-      @only += Array(only) unless only.blank?
-      @except += Array(except) unless except.blank?
-      clean_all
+      originals = @only, @except
+      @only, @except = Array(only), Array(except)
+      clean
+      @only, @except = originals
     end
 
     # for database_cleaner compat
