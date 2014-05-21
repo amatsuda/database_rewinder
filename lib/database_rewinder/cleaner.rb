@@ -31,6 +31,7 @@ module DatabaseRewinder
       originals = @only, @except
       @only, @except = Array(only), Array(except)
       clean_all
+    ensure
       @only, @except = originals
     end
 
