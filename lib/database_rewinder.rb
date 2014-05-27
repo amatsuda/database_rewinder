@@ -1,9 +1,5 @@
 require_relative 'database_rewinder/cleaner'
 
-if defined?(::Rails::Railtie)
-  require_relative 'database_rewinder/railtie'
-end
-
 module DatabaseRewinder
   VERSION = Gem.loaded_specs['database_rewinder'].version.to_s
 
@@ -86,4 +82,12 @@ module DatabaseRewinder
       @table_names_cache[db] ||= connection.tables.reject{|t| t == ActiveRecord::Migrator.schema_migrations_table_name }
     end
   end
+end
+
+begin
+  require 'rails'
+  require_relative 'database_rewinder/railtie'
+rescue LoadError
+  DatabaseRewinder.init
+  require_relative 'database_rewinder/active_record_monkey'
 end
