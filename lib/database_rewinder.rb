@@ -14,10 +14,6 @@ module DatabaseRewinder
       @cleaners, @table_names_cache, @clean_all, @only, @except = [], {}, false
     end
 
-    def configure
-      @db_config = Rails.application.config.database_configuration
-    end
-
     def create_cleaner(connection_name)
       config = @db_config[connection_name] or raise %Q[Database configuration named "#{connection_name}" is not configured.]
 
