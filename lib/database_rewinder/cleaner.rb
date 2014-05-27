@@ -38,8 +38,8 @@ module DatabaseRewinder
     # for database_cleaner compat
     def strategy=(args)
       options = args.is_a?(Array) ? args.extract_options! : {}
-      @only += Array(options[:only]) unless options[:only].blank?
-      @except += Array(options[:except]) unless options[:except].blank?
+      @only = Array(options[:only]) if options.key?(:only)
+      @except = Array(options[:except]) if options.key?(:except)
     end
 
     private
