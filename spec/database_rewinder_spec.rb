@@ -5,7 +5,7 @@ describe DatabaseRewinder do
 
   describe '.[]' do
     before do
-      DatabaseRewinder.instance_variable_set :'@db_config', {'foo' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
+      DatabaseRewinder.db_config = {'foo' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
       DatabaseRewinder[:aho, connection: 'foo']
     end
     subject { DatabaseRewinder.instance_variable_get(:'@cleaners').map {|c| c.connection_name} }
@@ -14,7 +14,7 @@ describe DatabaseRewinder do
 
   describe '.record_inserted_table' do
     before do
-      DatabaseRewinder.instance_variable_set :'@db_config', {'foo' => {'adapter' => 'sqlite3', 'database' => 'db/test.sqlite3'}}
+      DatabaseRewinder.db_config = {'foo' => {'adapter' => 'sqlite3', 'database' => 'db/test.sqlite3'}}
       @cleaner = DatabaseRewinder.create_cleaner 'foo'
       connection = double('connection').as_null_object
       connection.instance_variable_set :'@config', {adapter: 'sqlite3', database: File.expand_path('db/test.sqlite3', Rails.root) }

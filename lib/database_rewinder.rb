@@ -8,6 +8,8 @@ module DatabaseRewinder
   VERSION = Gem.loaded_specs['database_rewinder'].version.to_s
 
   class << self
+    attr_accessor :db_config
+
     def init
       @cleaners, @table_names_cache, @clean_all, @only, @except = [], {}, false
       @db_config = Rails.application.config.database_configuration
