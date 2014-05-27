@@ -81,35 +81,37 @@ describe DatabaseRewinder do
   end
 
   describe '.strategy=' do
-    context 'when no option is specified' do
-      before { described_class.strategy = :truncate }
-      it 'should set strategy' do
-        expect(described_class.instance_variable_get(:@only)).to be_nil
-        expect(described_class.instance_variable_get(:@except)).to be_nil
+    context 'call first with options' do
+      before do
+        DatabaseRewinder.strategy = :truncate, { only: ['foos'], except: ['bars'] }
       end
-    end
 
-    context 'when only option is specified' do
-      before { described_class.strategy = :truncate, { only: %w{foos} } }
-      it 'should set only option' do
-        expect(described_class.instance_variable_get(:@only)).to eq(['foos'])
-        expect(described_class.instance_variable_get(:@except)).to be_nil
+      it 'should set options' do
+        expect(DatabaseRewinder.instance_variable_get(:@only)).to eq(['foos'])
+        expect(DatabaseRewinder.instance_variable_get(:@except)).to eq(['bars'])
       end
-    end
 
-    context 'when except option is specified' do
-      before { described_class.strategy = :truncate, { except: %w{foos} } }
-      it 'should set except option' do
-        expect(described_class.instance_variable_get(:@only)).to be_nil
-        expect(described_class.instance_variable_get(:@except)).to eq(['foos'])
+      it 'should create cleaner with options' do
+        cleaner = DatabaseRewinder.instance_variable_get(:@cleaners).first
+        expect(cleaner.instance_variable_get(:@only)).to eq(['foos'])
+        expect(cleaner.instance_variable_get(:@except)).to eq(['bars'])
       end
-    end
 
-    context 'when only and except option are specified' do
-      before { described_class.strategy = :truncate, { only: %w{foos}, except: %w{bars} } }
-      it 'should set only and except options' do
-        expect(described_class.instance_variable_get(:@only)).to eq(['foos'])
-        expect(described_class.instance_variable_get(:@except)).to eq(['bars'])
+      context 'call again with different options' do
+        before do
+          DatabaseRewinder.strategy = :truncate, { only: ['bazs'], except: [] }
+        end
+
+        it 'should overwrite options' do
+          expect(DatabaseRewinder.instance_variable_get(:@only)).to eq(['bazs'])
+          expect(DatabaseRewinder.instance_variable_get(:@except)).to eq([])
+        end
+
+        it 'should overwrite cleaner with new options' do
+          cleaner = DatabaseRewinder.instance_variable_get(:@cleaners).first
+          expect(cleaner.instance_variable_get(:@only)).to eq(['bazs'])
+          expect(cleaner.instance_variable_get(:@except)).to eq([])
+        end
       end
     end
   end
