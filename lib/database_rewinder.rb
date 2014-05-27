@@ -10,7 +10,7 @@ module DatabaseRewinder
   class << self
     def init
       @cleaners, @table_names_cache, @clean_all, @only, @except = [], {}, false
-      @db_config = YAML::load(ERB.new(Rails.root.join('config/database.yml').read).result)
+      @db_config = Rails.application.config.database_configuration
     end
 
     def create_cleaner(connection_name)
