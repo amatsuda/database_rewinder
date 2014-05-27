@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe DatabaseRewinder do
-  before { DatabaseRewinder.init }
+  before do
+    DatabaseRewinder.init
+    DatabaseRewinder.configure
+  end
 
   describe '.[]' do
     before do

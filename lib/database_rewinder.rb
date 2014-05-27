@@ -12,6 +12,9 @@ module DatabaseRewinder
 
     def init
       @cleaners, @table_names_cache, @clean_all, @only, @except = [], {}, false
+    end
+
+    def configure
       @db_config = Rails.application.config.database_configuration
     end
 
