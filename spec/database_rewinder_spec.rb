@@ -3,7 +3,7 @@ require 'spec_helper'
 describe DatabaseRewinder do
   before do
     DatabaseRewinder.init
-    DatabaseRewinder.database_configuration = Rails.application.config.database_configuration
+    DatabaseRewinder.database_configuration = ActiveRecord::Base.configurations
   end
 
   describe '.[]' do
