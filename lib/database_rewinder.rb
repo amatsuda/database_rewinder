@@ -4,14 +4,19 @@ module DatabaseRewinder
   VERSION = Gem.loaded_specs['database_rewinder'].version.to_s
 
   class << self
-    attr_accessor :database_configuration
+    # Set your DB configuration here if you'd like to use something else than the AR configuration
+    attr_writer :database_configuration
 
     def init
       @cleaners, @table_names_cache, @clean_all, @only, @except = [], {}, false
     end
 
+    def database_configuration
+      @database_configuration || ActiveRecord::Base.configurations
+    end
+
     def create_cleaner(connection_name)
-      config = @database_configuration[connection_name] or raise %Q[Database configuration named "#{connection_name}" is not configured.]
+      config = database_configuration[connection_name] or raise %Q[Database configuration named "#{connection_name}" is not configured.]
 
       Cleaner.new(db: config['database'], connection_name: connection_name, only: @only, except: @except).tap {|c| @cleaners << c}
     end
