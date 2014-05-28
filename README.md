@@ -16,7 +16,7 @@ So, the more number of tables you have in your database, the more benefit you wi
 
 ### Credit
 
-This strategy was originally devised and implemented by @eudoxa.
+This strategy was originally devised and implemented by Shingo Morita (@eudoxa) at COOKPAD Inc.
 
 ## Supported versions
 
