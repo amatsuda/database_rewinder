@@ -1,6 +1,6 @@
 module DatabaseRewinder
   class Cleaner
-    attr_accessor :db, :connection_name, :inserted_tables, :pool
+    attr_accessor :db, :connection_name, :only, :except, :inserted_tables, :pool
 
     def initialize(db: nil, connection_name: nil, only: nil, except: nil)
       @db, @connection_name, @only, @except = db, connection_name, Array(only), Array(except)
@@ -29,17 +29,17 @@ module DatabaseRewinder
 
     def clean_with(_strategy, only: nil, except: nil, **)
       originals = @only, @except
-      @only, @except = Array(only), Array(except)
+      self.only, self.except = Array(only), Array(except)
       clean_all
     ensure
-      @only, @except = originals
+      self.only, self.except = originals
     end
 
     # for database_cleaner compat
     def strategy=(args)
       options = args.is_a?(Array) ? args.extract_options! : {}
-      @only = Array(options[:only]) if options.key?(:only)
-      @except = Array(options[:except]) if options.key?(:except)
+      self.only = Array(options[:only]) if options.key?(:only)
+      self.except = Array(options[:except]) if options.key?(:except)
     end
 
     private
