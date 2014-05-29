@@ -27,9 +27,10 @@ module DatabaseRewinder
       reset
     end
 
-    def clean_with(_strategy, only: nil, except: nil, **)
+    def clean_with(*args)
+      options = args.extract_options!
       originals = @only, @except
-      @only, @except = Array(only), Array(except)
+      @only, @except = Array(options[:only]), Array(options[:except])
       clean_all
     ensure
       @only, @except = originals
