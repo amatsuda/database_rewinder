@@ -66,24 +66,54 @@ describe DatabaseRewinder do
       @except = @cleaner.instance_variable_get(:@except)
       Foo.create! name: 'foo1'
       Bar.create! name: 'bar1'
-      DatabaseRewinder.clean_with :truncation, options
     end
 
-    context 'with only option' do
-      let(:options) { { only: ['foos'] } }
-      it 'should clean with only option and restore original one' do
-        Foo.count.should == 0
-        Bar.count.should == 1
-        expect(@cleaner.instance_variable_get(:@only)).to eq(@only)
+    context 'simple arguments' do
+      before do
+        DatabaseRewinder.clean_with options
+      end
+
+      context 'with only option' do
+        let(:options) { { only: ['foos'] } }
+        it 'should clean with only option and restore original one' do
+          Foo.count.should == 0
+          Bar.count.should == 1
+          expect(@cleaner.instance_variable_get(:@only)).to eq(@only)
+        end
+      end
+
+      context 'with except option' do
+        let(:options) { { except: ['bars'] } }
+        it 'should clean with except option and restore original one' do
+          Foo.count.should == 0
+          Bar.count.should == 1
+          expect(@cleaner.instance_variable_get(:@except)).to eq(@except)
+        end
       end
     end
 
-    context 'with except option' do
-      let(:options) { { except: ['bars'] } }
-      it 'should clean with except option and restore original one' do
-        Foo.count.should == 0
-        Bar.count.should == 1
-        expect(@cleaner.instance_variable_get(:@except)).to eq(@except)
+
+    context 'compatible arguments' do
+      before do
+        DatabaseRewinder.clean_with :truncation, options
+      end
+
+      context 'with only option' do
+        let(:options) { { only: ['foos'] } }
+        it 'should clean with only option and restore original one' do
+          Foo.count.should == 0
+          Bar.count.should == 1
+          expect(@cleaner.instance_variable_get(:@only)).to eq(@only)
+        end
+      end
+
+      context 'with except option' do
+        let(:options) { { except: ['bars'] } }
+        it 'should clean with except option and restore original one' do
+          Foo.count.should == 0
+          Bar.count.should == 1
+          expect(@cleaner.instance_variable_get(:@except)).to eq(@except)
+        end
       end
     end
   end
