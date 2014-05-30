@@ -71,19 +71,6 @@ module DatabaseRewinder
       cleaners.each {|c| c.clean_all}
     end
 
-    # for database_cleaner compat
-    def clean_with(*args)
-      cleaners.each {|c| c.clean_with *args}
-    end
-
-    # for database_cleaner compat
-    def start; end
-    def strategy=(args)
-      options = args.is_a?(Array) ? args.extract_options! : {}
-      @only, @except = options[:only], options[:except]
-      cleaners.each {|c| c.strategy = nil, options}
-    end
-
     # cache AR connection.tables
     def all_table_names(connection)
       db = connection.instance_variable_get(:'@config')[:database]

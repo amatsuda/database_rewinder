@@ -27,21 +27,6 @@ module DatabaseRewinder
       reset
     end
 
-    def clean_with(_strategy, only: nil, except: nil, **)
-      originals = @only, @except
-      self.only, self.except = Array(only), Array(except)
-      clean_all
-    ensure
-      self.only, self.except = originals
-    end
-
-    # for database_cleaner compat
-    def strategy=(args)
-      options = args.is_a?(Array) ? args.extract_options! : {}
-      self.only = Array(options[:only]) if options.key?(:only)
-      self.except = Array(options[:except]) if options.key?(:except)
-    end
-
     private
     def delete_all(ar_conn, tables)
       tables = tables & @only if @only.any?
@@ -68,3 +53,5 @@ module DatabaseRewinder
     end
   end
 end
+
+require_relative 'compatibility'
