@@ -29,6 +29,13 @@ module DatabaseRewinder
       @clean_all = v
     end
 
+    def filter_options=(options)
+      return unless options.is_a?(Hash)
+      @only = options[:only] if options.key?(:only)
+      @except = options[:except] if options.key?(:except)
+      @cleaners.each {|c| c.only, c.except = Array(@only), Array(@except)}
+    end
+
     def cleaners
       create_cleaner 'test' if @cleaners.empty?
       @cleaners

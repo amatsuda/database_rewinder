@@ -17,6 +17,46 @@ describe DatabaseRewinder do
     it { should == ['foo'] }
   end
 
+  describe '.filter_options=' do
+    before do
+      @dbr_only = DatabaseRewinder.instance_variable_set(:@only, ['foos'])
+      @dbr_except = DatabaseRewinder.instance_variable_set(:@except, ['bars'])
+      @cleaner = DatabaseRewinder.cleaners.first
+      @cleaner_only, @cleaner_except = @cleaner.only, @cleaner.except
+      DatabaseRewinder.filter_options = filter_options
+    end
+
+    context 'with only option' do
+      let(:filter_options) { { only: ['bazs'] } }
+      it 'should set only option and keep except option' do
+        expect(DatabaseRewinder.instance_variable_get(:@only)).to eq(['bazs'])
+        expect(DatabaseRewinder.instance_variable_get(:@except)).to eq(@dbr_except)
+        expect(@cleaner.only).to eq(['bazs'])
+        expect(@cleaner.except).to eq(@cleaner_except)
+      end
+    end
+
+    context 'with except option' do
+      let(:filter_options) { { except: ['bazs'] } }
+      it 'should set except option and keep only option' do
+        expect(DatabaseRewinder.instance_variable_get(:@only)).to eq(@dbr_only)
+        expect(DatabaseRewinder.instance_variable_get(:@except)).to eq(['bazs'])
+        expect(@cleaner.only).to eq(@cleaner_only)
+        expect(@cleaner.except).to eq(['bazs'])
+      end
+    end
+
+    context 'with only and except options' do
+      let(:filter_options) { { only: ['bazs'], except: [] } }
+      it 'should set only and except options' do
+        expect(DatabaseRewinder.instance_variable_get(:@only)).to eq(['bazs'])
+        expect(DatabaseRewinder.instance_variable_get(:@except)).to eq([])
+        expect(@cleaner.only).to eq(['bazs'])
+        expect(@cleaner.except).to eq([])
+      end
+    end
+  end
+
   describe '.record_inserted_table' do
     before do
       DatabaseRewinder.database_configuration = {'foo' => {'adapter' => 'sqlite3', 'database' => 'db/test.sqlite3'}}
