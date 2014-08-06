@@ -37,7 +37,7 @@ module DatabaseRewinder
     def record_inserted_table(connection, sql)
       config = connection.instance_variable_get(:'@config')
       database = config[:database]
-      #NOTE What's the best way to get the app dir besides Rails.root? I know Dir.pwd here might be not the right solution, but it should work in most cases...
+      #NOTE What's the best way to get the app dir besides Rails.root? I know Dir.pwd here might not be the right solution, but it should work in most cases...
       root_dir = defined?(Rails) ? Rails.root : Dir.pwd
       cleaner = cleaners.detect do |c|
         if (config[:adapter] == 'sqlite3') && (config[:database] != ':memory:')
