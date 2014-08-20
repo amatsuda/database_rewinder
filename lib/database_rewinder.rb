@@ -8,7 +8,7 @@ module DatabaseRewinder
     attr_writer :database_configuration
 
     def init
-      @cleaners, @table_names_cache, @clean_all, @only, @except = [], {}, false
+      @cleaners, @table_names_cache, @clean_all, @only, @except, @database_configuration = [], {}, false
     end
 
     def database_configuration
