@@ -1,7 +1,7 @@
 module DatabaseRewinder
   module Compatibility
     def clean_with(*args)
-      cleaners.each {|c| c.clean_with *args}
+      cleaners.each {|c| c.clean_with(*args)}
     end
 
     def start; end
