@@ -25,8 +25,15 @@ module DatabaseRewinder
     end
 
     def clean_all
-      ar_conn = (pool || find_already_connected_model || dummy_model).connection
-      delete_all ar_conn, DatabaseRewinder.all_table_names(ar_conn)
+      if (ar_conn = (pool || find_already_connected_model).try :connection)
+        delete_all ar_conn, DatabaseRewinder.all_table_names(ar_conn)
+      else
+        require 'database_rewinder/dummy_model'
+        DummyModel.with_temporary_connection(config) do |ar_conn|
+          delete_all ar_conn, DatabaseRewinder.all_table_names(ar_conn)
+        end
+      end
+
       reset
     end
 
@@ -57,14 +64,6 @@ module DatabaseRewinder
 
     def find_already_connected_model
       ActiveRecord::Base.descendants.detect {|m| m.connection_pool.spec.config[:database] == db}
-    end
-
-    def dummy_model
-      @dummy_model ||= begin
-        model = Class.new(ActiveRecord::Base) { def self.name() "database_rewinder_dummy" end }
-        model.establish_connection config
-        model
-      end
     end
   end
 end
