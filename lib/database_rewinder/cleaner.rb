@@ -1,10 +1,14 @@
 module DatabaseRewinder
   class Cleaner
-    attr_accessor :db, :connection_name, :only, :except, :inserted_tables, :pool
+    attr_accessor :config, :connection_name, :only, :except, :inserted_tables, :pool
 
-    def initialize(db: nil, connection_name: nil, only: nil, except: nil)
-      @db, @connection_name, @only, @except = db, connection_name, Array(only), Array(except)
+    def initialize(config: nil, connection_name: nil, only: nil, except: nil)
+      @config, @connection_name, @only, @except = config, connection_name, Array(only), Array(except)
       reset
+    end
+
+    def db
+      config['database']
     end
 
     def clean

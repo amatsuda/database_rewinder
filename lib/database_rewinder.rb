@@ -18,7 +18,7 @@ module DatabaseRewinder
     def create_cleaner(connection_name)
       config = database_configuration[connection_name] or raise %Q[Database configuration named "#{connection_name}" is not configured.]
 
-      Cleaner.new(db: config['database'], connection_name: connection_name, only: @only, except: @except).tap {|c| @cleaners << c}
+      Cleaner.new(config: config, connection_name: connection_name, only: @only, except: @except).tap {|c| @cleaners << c}
     end
 
     def [](_orm, connection: nil, **)
