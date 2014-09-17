@@ -45,8 +45,27 @@ module DatabaseRewinder
       return if tables.empty?
 
       ar_conn.disable_referential_integrity do
-        tables.each do |table_name|
-          ar_conn.execute "DELETE FROM #{ar_conn.quote_table_name(table_name)};"
+        case ar_conn.pool.spec.config[:adapter]
+        when 'mysql2'
+          begin
+            query_options = ar_conn.instance_variable_get(:@connection).query_options
+            query_options[:connect_flags] |= Mysql2::Client::MULTI_STATEMENTS
+            client = Mysql2::Client.new query_options
+            sql = tables.inject('') {|s, table_name| s += "DELETE FROM #{ar_conn.quote_table_name(table_name)};"}
+            begin
+              ar_conn.send(:log, sql) { client.query sql }
+            ensure
+              client.close
+            end
+          rescue
+            tables.each do |table_name|
+              ar_conn.execute "DELETE FROM #{ar_conn.quote_table_name(table_name)};"
+            end
+          end
+        else
+          tables.each do |table_name|
+            ar_conn.execute "DELETE FROM #{ar_conn.quote_table_name(table_name)};"
+          end
         end
       end
     end
