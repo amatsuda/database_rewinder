@@ -22,7 +22,7 @@ This strategy was originally devised and implemented by Shingo Morita (@eudoxa) 
 
 ## Supported versions
 
-* ActiveRecord 3.2, 4.0, 4.1
+* ActiveRecord 3.2, 4.0, 4.1, 4.2
 
 * Ruby 2.0, 2.1, 2.2
 
