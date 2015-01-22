@@ -47,8 +47,10 @@ module DatabaseRewinder
         end
       end or return
 
-      match = sql.match(/\AINSERT INTO [`"]?([^\s`"]+)[`"]?/i)
-      table = match[1] if match
+      match = sql.match(/\AINSERT INTO [`"]?([^\s`"]+)[`"]?(?:\.[`"]?([^\s`"]+)[`"]?)?/i)
+      return unless match
+
+      table = match[2] || match[1]
       if table
         cleaner.inserted_tables << table unless cleaner.inserted_tables.include? table
         cleaner.pool ||= connection.pool

@@ -23,14 +23,22 @@ describe DatabaseRewinder do
       @cleaner = DatabaseRewinder.create_cleaner 'foo'
       connection = double('connection').as_null_object
       connection.instance_variable_set :'@config', {adapter: 'sqlite3', database: File.expand_path('db/test.sqlite3', Rails.root) }
-      DatabaseRewinder.record_inserted_table(connection, 'INSERT INTO "foos" ("name") VALUES (?)')
+      DatabaseRewinder.record_inserted_table(connection, sql)
     end
     after do
       DatabaseRewinder.database_configuration = nil
     end
     subject { @cleaner }
 
-    its(:inserted_tables) { should == ['foos'] }
+    context 'include database name' do
+      let(:sql) { 'INSERT INTO "database"."foos" ("name") VALUES (?)' }
+      its(:inserted_tables) { should == ['foos'] }
+    end
+
+    context 'only table name' do
+      let(:sql) { 'INSERT INTO "foos" ("name") VALUES (?)' }
+      its(:inserted_tables) { should == ['foos'] }
+    end
   end
 
   describe '.clean' do
