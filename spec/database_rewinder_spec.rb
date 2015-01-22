@@ -30,14 +30,31 @@ describe DatabaseRewinder do
     end
     subject { @cleaner }
 
-    context 'include database name' do
-      let(:sql) { 'INSERT INTO "database"."foos" ("name") VALUES (?)' }
-      its(:inserted_tables) { should == ['foos'] }
+    context 'common database' do
+      context 'include database name' do
+        let(:sql) { 'INSERT INTO "database"."foos" ("name") VALUES (?)' }
+        its(:inserted_tables) { should == ['foos'] }
+      end
+      context 'only table name' do
+        let(:sql) { 'INSERT INTO "foos" ("name") VALUES (?)' }
+        its(:inserted_tables) { should == ['foos'] }
+      end
     end
 
-    context 'only table name' do
-      let(:sql) { 'INSERT INTO "foos" ("name") VALUES (?)' }
-      its(:inserted_tables) { should == ['foos'] }
+    context 'DataBase accepts more than one dots in an object notation(exp: SQLServer)' do
+      context 'full joined' do
+      let(:sql) { 'INSERT INTO server.database.schema.foos ("name") VALUES (?)' }
+        its(:inserted_tables) { should == ['foos'] }
+      end
+      context 'missing one' do
+        let(:sql) { 'INSERT INTO database..foos ("name") VALUES (?)' }
+        its(:inserted_tables) { should == ['foos'] }
+      end
+
+      context 'missing two' do
+        let(:sql) { 'INSERT INTO server...foos ("name") VALUES (?)' }
+        its(:inserted_tables) { should == ['foos'] }
+      end
     end
   end
 
