@@ -77,12 +77,12 @@ module DatabaseRewinder
       if @clean_all
         clean_all
       else
-        cleaners.each {|c| c.clean}
+        cleaners.each(&:clean)
       end
     end
 
     def clean_all
-      cleaners.each {|c| c.clean_all}
+      cleaners.each(&:clean_all)
     end
 
     # cache AR connection.tables

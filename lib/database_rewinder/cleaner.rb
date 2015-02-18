@@ -55,10 +55,10 @@ module DatabaseRewinder
       @inserted_tables = []
     end
 
-    def with_automatic_reconnect(pool, &block)
+    def with_automatic_reconnect(pool)
       reconnect = pool.automatic_reconnect
       pool.automatic_reconnect = true
-      block.call
+      yield
     ensure
       pool.automatic_reconnect = reconnect
     end
