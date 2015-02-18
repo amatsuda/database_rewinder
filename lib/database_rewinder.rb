@@ -22,7 +22,13 @@ module DatabaseRewinder
     end
 
     def [](orm, connection: nil, **)
-      connection = orm[:connection] if connection.nil? && orm.is_a?(Hash) && orm.has_key?(:connection)
+      if connection.nil?
+        if orm.is_a? String
+          connection = orm
+        elsif orm.is_a?(Hash) && orm.has_key?(:connection)
+          connection = orm[:connection]
+        end
+      end
       @cleaners.detect {|c| c.connection_name == connection} || create_cleaner(connection)
     end
 

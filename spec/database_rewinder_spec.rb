@@ -12,6 +12,14 @@ describe DatabaseRewinder do
       end
       subject { DatabaseRewinder.instance_variable_get(:'@cleaners').map {|c| c.connection_name} }
 
+      context 'simply giving a connection name only' do
+        before do
+          DatabaseRewinder.database_configuration = {'aaa' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
+          DatabaseRewinder['aaa']
+        end
+        it { should == ['aaa'] }
+      end
+
       context 'giving a connection name via Hash with :connection key' do
         before do
           DatabaseRewinder.database_configuration = {'aaa' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
