@@ -3,3 +3,9 @@ test:
   database: test.sqlite3
   pool: 5
   timeout: 5000
+
+test2:
+  adapter: sqlite3
+  database: test2.sqlite3
+  pool: 5
+  timeout: 5000

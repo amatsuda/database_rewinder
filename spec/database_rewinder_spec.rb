@@ -6,15 +6,33 @@ describe DatabaseRewinder do
   end
 
   describe '.[]' do
-    before do
-      DatabaseRewinder.database_configuration = {'foo' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
-      DatabaseRewinder[:aho, connection: 'foo']
+    context 'for connecting to an arbitrary database' do
+      before do
+        DatabaseRewinder.database_configuration = {'foo' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
+        DatabaseRewinder[:aho, connection: 'foo']
+      end
+      after do
+        DatabaseRewinder.database_configuration = nil
+      end
+      subject { DatabaseRewinder.instance_variable_get(:'@cleaners').map {|c| c.connection_name} }
+      it { should == ['foo'] }
     end
-    after do
-      DatabaseRewinder.database_configuration = nil
+
+    context 'for connecting to multiple databases' do
+      before do
+        DatabaseRewinder[:active_record, connection: 'test']
+        DatabaseRewinder[:active_record, connection: 'test2']
+
+        Foo.create! name: 'foo1'
+        Quu.create! name: 'quu1'
+
+        DatabaseRewinder.clean
+      end
+      it 'should clean all configured databases' do
+        Foo.count.should == 0
+        Quu.count.should == 0
+      end
     end
-    subject { DatabaseRewinder.instance_variable_get(:'@cleaners').map {|c| c.connection_name} }
-    it { should == ['foo'] }
   end
 
   describe '.record_inserted_table' do
