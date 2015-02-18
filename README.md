@@ -91,11 +91,6 @@ So the following code will probably let your existing app work under database\_r
 DatabaseCleaner = DatabaseRewinder
 ```
 
-## TODO
-
-Write documentation and specs about multiple databases.
-
-
 ## Contributing
 
 Send me your pull requests.
