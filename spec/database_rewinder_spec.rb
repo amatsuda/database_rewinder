@@ -61,7 +61,7 @@ describe DatabaseRewinder do
 
     context 'Database accepts more than one dots in an object notation(exp: SQLServer)' do
       context 'full joined' do
-      let(:sql) { 'INSERT INTO server.database.schema.foos ("name") VALUES (?)' }
+        let(:sql) { 'INSERT INTO server.database.schema.foos ("name") VALUES (?)' }
         its(:inserted_tables) { should == ['foos'] }
       end
       context 'missing one' do
