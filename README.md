@@ -38,6 +38,8 @@ And then execute:
 
 ## Usage
 
+### Basic configuration
+
 Do `clean` in `after(:each)`. And do `clean_all` or `clean_with` in `before(:suite)` if you'd like to.
 
 ```ruby
@@ -52,6 +54,34 @@ RSpec.configure do |config|
     DatabaseRewinder.clean
   end
 end
+```
+
+### Dealing with multiple DBs
+
+You can use DatabaseCleaner to clean multiple ORMs, and multiple connections for those ORMs.
+
+You can configure multiple DB connections to tell DatabaseRewinder to cleanup all of them after each test.
+In order to add another connection, use `DatabaseRewinder[]` method.
+
+```ruby
+RSpec.configure do |config|
+  config.before(:suite) do
+    # simply give the DB connection names that are written in config/database.yml
+    DatabaseRewinder['test']
+    DatabaseRewinder['another_test_db']
+
+    # you could give the DB name with connection: key if you like
+    DatabaseRewinder[connection: 'yet_another_test_db']
+
+    # also with a meaning less something first, then {connection: DB_NAME} as the second argument (DatabaseCleaner compatible)
+    DatabaseRewinder[:active_record, connection: 'an_active_record_db']
+
+    DatabaseRewinder.clean_all
+  end
+
+  config.after(:each) do
+    DatabaseRewinder.clean
+  end
 ```
 
 ### Pro Tip
