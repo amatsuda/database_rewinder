@@ -71,7 +71,7 @@ RSpec.configure do |config|
     # you could give the DB name with connection: key if you like
     DatabaseRewinder[connection: 'yet_another_test_db']
 
-    # also with a meaning less something first, then {connection: DB_NAME} as the second argument (DatabaseCleaner compatible)
+    # or with a meaningless something first, then {connection: DB_NAME} as the second argument (DatabaseCleaner compatible)
     DatabaseRewinder[:active_record, connection: 'an_active_record_db']
 
     DatabaseRewinder.clean_all
