@@ -11,9 +11,20 @@ module DatabaseRewinder
       @only, @except = options[:only], options[:except]
       cleaners.each {|c| c.strategy = nil, options}
     end
+
+    def [](orm, connection: nil, **)
+      if connection.nil?
+        if orm.is_a? String
+          connection = orm
+        elsif orm.is_a?(Hash) && orm.has_key?(:connection)
+          connection = orm[:connection]
+        end
+      end
+      super connection
+    end
   end
   class << self
-    include Compatibility
+    prepend Compatibility
   end
 
   class Cleaner
