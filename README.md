@@ -58,8 +58,6 @@ end
 
 ### Dealing with multiple DBs
 
-You can use DatabaseCleaner to clean multiple ORMs, and multiple connections for those ORMs.
-
 You can configure multiple DB connections to tell DatabaseRewinder to cleanup all of them after each test.
 In order to add another connection, use `DatabaseRewinder[]` method.
 
