@@ -7,15 +7,26 @@ describe DatabaseRewinder do
 
   describe '.[]' do
     context 'for connecting to an arbitrary database' do
-      before do
-        DatabaseRewinder.database_configuration = {'foo' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
-        DatabaseRewinder[:aho, connection: 'foo']
-      end
       after do
         DatabaseRewinder.database_configuration = nil
       end
       subject { DatabaseRewinder.instance_variable_get(:'@cleaners').map {|c| c.connection_name} }
-      it { should == ['foo'] }
+
+      context 'giving a connection name via Hash with :connection key' do
+        before do
+          DatabaseRewinder.database_configuration = {'aaa' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
+          DatabaseRewinder[connection: 'aaa']
+        end
+        it { should == ['aaa'] }
+      end
+
+      context 'the Cleaner compatible syntax' do
+        before do
+          DatabaseRewinder.database_configuration = {'bbb' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
+          DatabaseRewinder[:aho, connection: 'bbb']
+        end
+        it { should == ['bbb'] }
+      end
     end
 
     context 'for connecting to multiple databases' do

@@ -21,7 +21,8 @@ module DatabaseRewinder
       Cleaner.new(config: config, connection_name: connection_name, only: @only, except: @except).tap {|c| @cleaners << c}
     end
 
-    def [](_orm, connection: nil, **)
+    def [](orm, connection: nil, **)
+      connection = orm[:connection] if connection.nil? && orm.is_a?(Hash) && orm.has_key?(:connection)
       @cleaners.detect {|c| c.connection_name == connection} || create_cleaner(connection)
     end
 
