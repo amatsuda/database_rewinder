@@ -22,18 +22,18 @@ describe DatabaseRewinder do
 
       context 'giving a connection name via Hash with :connection key' do
         before do
-          DatabaseRewinder.database_configuration = {'aaa' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
-          DatabaseRewinder[connection: 'aaa']
+          DatabaseRewinder.database_configuration = {'bbb' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
+          DatabaseRewinder[connection: 'bbb']
         end
-        it { should == ['aaa'] }
+        it { should == ['bbb'] }
       end
 
       context 'the Cleaner compatible syntax' do
         before do
-          DatabaseRewinder.database_configuration = {'bbb' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
-          DatabaseRewinder[:aho, connection: 'bbb']
+          DatabaseRewinder.database_configuration = {'ccc' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
+          DatabaseRewinder[:aho, connection: 'ccc']
         end
-        it { should == ['bbb'] }
+        it { should == ['ccc'] }
       end
     end
 
