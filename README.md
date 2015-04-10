@@ -56,6 +56,23 @@ RSpec.configure do |config|
 end
 ```
 
+### Pausing DatabaseRewinder
+
+Do 'pause' before creating data to have DatabaseRewinder temporarily skip cleaning. Do 'resume' afterwards to
+resume the normal DatabaseRewinder behavior. These methods assume 'clean' or 'clean_all' is being called after every test.
+If not, run 'clean' or 'clean_all' manually after 'resume'
+
+```ruby
+DatabaseRewinder.pause
+Foo.create! name: 'foo1'
+Bar.create! name: 'bar1'
+DatabaseRewinder.clean
+# 'foo1' and 'bar1' will still exist
+DatabaseRewinder.resume
+DatabaseRewinder.clean
+# 'foo1' and 'bar1' will be cleaned
+```
+
 ### Dealing with multiple DBs
 
 You can configure multiple DB connections to tell DatabaseRewinder to cleanup all of them after each test.
