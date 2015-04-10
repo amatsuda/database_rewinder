@@ -74,6 +74,7 @@ module DatabaseRewinder
     end
 
     def clean
+      return if @pause
       if @clean_all
         clean_all
       else
@@ -82,7 +83,16 @@ module DatabaseRewinder
     end
 
     def clean_all
+      return if @pause
       cleaners.each(&:clean_all)
+    end
+
+    def pause
+      @pause = true
+    end
+
+    def resume
+      @pause = false
     end
 
     # cache AR connection.tables
