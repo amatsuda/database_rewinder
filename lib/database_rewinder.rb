@@ -57,7 +57,7 @@ module DatabaseRewinder
       match = sql.match(/\AINSERT INTO (?:\.*[`"]?([^.\s`"]+)[`"]?)*/i)
 
       return unless match && table = match[1]
-      cleaner.inserted_tables << table unless cleaner.inserted_tables.include? table
+      cleaner.add_table(table.downcase)
       cleaner.pool ||= connection.pool
     end
 

@@ -83,6 +83,10 @@ describe DatabaseRewinder do
           let(:sql) { 'INSERT INTO "foos" ("name") VALUES (?)' }
           its(:inserted_tables) { should == ['foos'] }
         end
+        context 'capitalized table name' do
+          let(:sql) { 'INSERT INTO "FOOS" ("name") VALUES (?)' }
+          its(:inserted_tables) { should == ['foos'] }
+        end
       end
 
       context 'Database accepts more than one dots in an object notation(exp: SQLServer)' do
