@@ -55,42 +55,69 @@ describe DatabaseRewinder do
   end
 
   describe '.record_inserted_table' do
-    before do
-      DatabaseRewinder.database_configuration = {'foo' => {'adapter' => 'sqlite3', 'database' => 'db/test_record_inserted_table.sqlite3'}}
-      @cleaner = DatabaseRewinder.create_cleaner 'foo'
-      connection = double('connection').as_null_object
-      connection.instance_variable_set :'@config', {adapter: 'sqlite3', database: File.expand_path('db/test_record_inserted_table.sqlite3', Rails.root) }
-      DatabaseRewinder.record_inserted_table(connection, sql)
+    let(:connection) do
+      double('connection').as_null_object.tap do |conn|
+        conn.instance_variable_set :'@config', {adapter: 'sqlite3', database: database}
+      end
     end
+
     after do
       DatabaseRewinder.database_configuration = nil
     end
-    subject { @cleaner }
 
-    context 'common database' do
-      context 'include database name' do
-        let(:sql) { 'INSERT INTO "database"."foos" ("name") VALUES (?)' }
-        its(:inserted_tables) { should == ['foos'] }
+    context 'one database' do
+      before do
+        DatabaseRewinder.database_configuration = {'foo' => {'adapter' => 'sqlite3', 'database' => 'db/test_record_inserted_table.sqlite3'}}
+        @cleaner = DatabaseRewinder.create_cleaner 'foo'
+        DatabaseRewinder.record_inserted_table(connection, sql)
       end
-      context 'only table name' do
-        let(:sql) { 'INSERT INTO "foos" ("name") VALUES (?)' }
-        its(:inserted_tables) { should == ['foos'] }
+      let(:database) { File.expand_path('db/test_record_inserted_table.sqlite3', Rails.root) }
+      subject { @cleaner }
+
+      context 'common database' do
+        context 'include database name' do
+          let(:sql) { 'INSERT INTO "database"."foos" ("name") VALUES (?)' }
+          its(:inserted_tables) { should == ['foos'] }
+        end
+        context 'only table name' do
+          let(:sql) { 'INSERT INTO "foos" ("name") VALUES (?)' }
+          its(:inserted_tables) { should == ['foos'] }
+        end
+        context 'capitalized table name' do
+          let(:sql) { 'INSERT INTO "FOOS" ("name") VALUES (?)' }
+          its(:inserted_tables) { should == ['foos'] }
+        end
+      end
+
+      context 'Database accepts more than one dots in an object notation(exp: SQLServer)' do
+        context 'full joined' do
+          let(:sql) { 'INSERT INTO server.database.schema.foos ("name") VALUES (?)' }
+          its(:inserted_tables) { should == ['foos'] }
+        end
+        context 'missing one' do
+          let(:sql) { 'INSERT INTO database..foos ("name") VALUES (?)' }
+          its(:inserted_tables) { should == ['foos'] }
+        end
+
+        context 'missing two' do
+          let(:sql) { 'INSERT INTO server...foos ("name") VALUES (?)' }
+          its(:inserted_tables) { should == ['foos'] }
+        end
       end
     end
 
-    context 'Database accepts more than one dots in an object notation(exp: SQLServer)' do
-      context 'full joined' do
-        let(:sql) { 'INSERT INTO server.database.schema.foos ("name") VALUES (?)' }
-        its(:inserted_tables) { should == ['foos'] }
+    context 'multiple databases' do
+      before do
+        DatabaseRewinder.database_configuration = {'foo' => {'database' => 'foo'}, 'foobar' => {'database' => 'foobar'}}
       end
-      context 'missing one' do
-        let(:sql) { 'INSERT INTO database..foos ("name") VALUES (?)' }
-        its(:inserted_tables) { should == ['foos'] }
-      end
+      let(:database) { 'foo' }
+      let!(:foobar)  { DatabaseRewinder.create_cleaner 'foobar' }
+      let!(:foo)     { DatabaseRewinder.create_cleaner 'foo' }
 
-      context 'missing two' do
-        let(:sql) { 'INSERT INTO server...foos ("name") VALUES (?)' }
-        its(:inserted_tables) { should == ['foos'] }
+      it 'does not add tables to the wrong database' do
+        DatabaseRewinder.record_inserted_table(connection, 'INSERT INTO "something" ("name") VALUES (?)')
+        expect(foo.inserted_tables).to eq(['something'])
+        expect(foobar.inserted_tables).to be_empty
       end
     end
   end

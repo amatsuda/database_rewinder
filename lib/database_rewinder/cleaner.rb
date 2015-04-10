@@ -11,6 +11,10 @@ module DatabaseRewinder
       config['database']
     end
 
+    def add_table(table)
+      @inserted_tables << table unless @inserted_tables.include? table
+    end
+
     def clean
       return if !pool || inserted_tables.empty?
 
