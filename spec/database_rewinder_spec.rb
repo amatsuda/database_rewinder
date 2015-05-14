@@ -93,6 +93,11 @@ describe DatabaseRewinder do
         its(:inserted_tables) { should == ['foos'] }
       end
     end
+
+    context 'when database accepts INSERT IGNORE INTO statement' do
+      let(:sql) { "INSERT IGNORE INTO `foos` (`name`) VALUES ('alice'), ('bob') ON DUPLICATE KEY UPDATE `foos`.`updated_at`=VALUES(`updated_at`)" }
+      its(:inserted_tables) { should == ['foos'] }
+    end
   end
 
   describe '.clean' do
