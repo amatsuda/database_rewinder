@@ -63,7 +63,7 @@ module DatabaseRewinder
         end
       end or return
 
-      match = sql.match(/\AINSERT(?: IGNORE)? INTO (?:\.*[`"]?([^.\s`"]+)[`"]?)*/i)
+      match = sql.match(/\AINSERT(?:\s+IGNORE)?\s+INTO\s+(?:\.*[`"]?([^.\s`"]+)[`"]?)*/i)
       return unless match
 
       table = match[1]
