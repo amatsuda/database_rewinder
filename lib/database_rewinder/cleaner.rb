@@ -30,8 +30,8 @@ module DatabaseRewinder
         delete_all ar_conn, DatabaseRewinder.all_table_names(ar_conn)
       else
         require 'database_rewinder/dummy_model'
-        DummyModel.with_temporary_connection(config) do |ar_conn|
-          delete_all ar_conn, DatabaseRewinder.all_table_names(ar_conn)
+        DummyModel.with_temporary_connection(config) do |temporary_connection|
+          delete_all temporary_connection, DatabaseRewinder.all_table_names(temporary_connection)
         end
       end
 
