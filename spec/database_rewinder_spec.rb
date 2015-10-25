@@ -48,8 +48,8 @@ describe DatabaseRewinder do
         DatabaseRewinder.clean
       end
       it 'should clean all configured databases' do
-        Foo.count.should == 0
-        Quu.count.should == 0
+        expect(Foo.count).to eq(0)
+        expect(Quu.count).to eq(0)
       end
     end
   end
@@ -70,33 +70,57 @@ describe DatabaseRewinder do
     context 'common database' do
       context 'include database name' do
         let(:sql) { 'INSERT INTO "database"."foos" ("name") VALUES (?)' }
-        its(:inserted_tables) { should == ['foos'] }
+
+        describe '#inserted_tables' do
+          subject { super().inserted_tables }
+          it { should == ['foos'] }
+        end
       end
       context 'only table name' do
         let(:sql) { 'INSERT INTO "foos" ("name") VALUES (?)' }
-        its(:inserted_tables) { should == ['foos'] }
+
+        describe '#inserted_tables' do
+          subject { super().inserted_tables }
+          it { should == ['foos'] }
+        end
       end
     end
 
     context 'Database accepts more than one dots in an object notation (e.g. SQLServer)' do
       context 'full joined' do
         let(:sql) { 'INSERT INTO server.database.schema.foos ("name") VALUES (?)' }
-        its(:inserted_tables) { should == ['foos'] }
+
+        describe '#inserted_tables' do
+          subject { super().inserted_tables }
+          it { should == ['foos'] }
+        end
       end
       context 'missing one' do
         let(:sql) { 'INSERT INTO database..foos ("name") VALUES (?)' }
-        its(:inserted_tables) { should == ['foos'] }
+
+        describe '#inserted_tables' do
+          subject { super().inserted_tables }
+          it { should == ['foos'] }
+        end
       end
 
       context 'missing two' do
         let(:sql) { 'INSERT INTO server...foos ("name") VALUES (?)' }
-        its(:inserted_tables) { should == ['foos'] }
+
+        describe '#inserted_tables' do
+          subject { super().inserted_tables }
+          it { should == ['foos'] }
+        end
       end
     end
 
     context 'when database accepts INSERT IGNORE INTO statement' do
       let(:sql) { "INSERT IGNORE INTO `foos` (`name`) VALUES ('alice'), ('bob') ON DUPLICATE KEY UPDATE `foos`.`updated_at`=VALUES(`updated_at`)" }
-      its(:inserted_tables) { should == ['foos'] }
+
+      describe '#inserted_tables' do
+        subject { super().inserted_tables }
+        it { should == ['foos'] }
+      end
     end
   end
 
@@ -107,8 +131,8 @@ describe DatabaseRewinder do
       DatabaseRewinder.clean
     end
     it 'should clean' do
-      Foo.count.should == 0
-      Bar.count.should == 0
+      expect(Foo.count).to eq(0)
+      expect(Bar.count).to eq(0)
     end
   end
 
@@ -121,8 +145,8 @@ describe DatabaseRewinder do
     end
     after { ActiveRecord::SchemaMigration.drop_table }
     it 'should clean except schema_migrations' do
-      Foo.count.should == 0
-      ActiveRecord::SchemaMigration.count.should == 1
+      expect(Foo.count).to eq(0)
+      expect(ActiveRecord::SchemaMigration.count).to eq(1)
     end
   end
 
@@ -139,8 +163,8 @@ describe DatabaseRewinder do
     context 'with only option' do
       let(:options) { { only: ['foos'] } }
       it 'should clean with only option and restore original one' do
-        Foo.count.should == 0
-        Bar.count.should == 1
+        expect(Foo.count).to eq(0)
+        expect(Bar.count).to eq(1)
         expect(@cleaner.instance_variable_get(:@only)).to eq(@only)
       end
     end
@@ -148,8 +172,8 @@ describe DatabaseRewinder do
     context 'with except option' do
       let(:options) { { except: ['bars'] } }
       it 'should clean with except option and restore original one' do
-        Foo.count.should == 0
-        Bar.count.should == 1
+        expect(Foo.count).to eq(0)
+        expect(Bar.count).to eq(1)
         expect(@cleaner.instance_variable_get(:@except)).to eq(@except)
       end
     end

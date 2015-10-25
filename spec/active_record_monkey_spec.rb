@@ -8,6 +8,14 @@ describe 'DatabaseRewinder::InsertRecorder#execute' do
     DatabaseRewinder.cleaners
   end
   subject { DatabaseRewinder.instance_variable_get(:'@cleaners').detect {|c| c.db == 'test.sqlite3'} }
-  its(:inserted_tables) { should == %w(foos bars) }
-  its(:pool) { should be }
+
+  describe '#inserted_tables' do
+    subject { super().inserted_tables }
+    it { should == %w(foos bars) }
+  end
+
+  describe '#pool' do
+    subject { super().pool }
+    it { should be }
+  end
 end
