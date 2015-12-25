@@ -24,7 +24,7 @@ This strategy was originally devised and implemented by Shingo Morita (@eudoxa) 
 
 * ActiveRecord 3.2, 4.0, 4.1, 4.2
 
-* Ruby 2.0, 2.1, 2.2
+* Ruby 2.0, 2.1, 2.2, 2.3
 
 ## Installation
 
