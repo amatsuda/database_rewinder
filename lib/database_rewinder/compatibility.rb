@@ -12,7 +12,7 @@ module DatabaseRewinder
       cleaners.each {|c| c.strategy = nil, options}
     end
 
-    # In order to add another database to cleanup, you can give its connection name in on of the forms below:
+    # In order to add another database to cleanup, you can give its connection name in one of the forms below:
     #
     #    # the simplest form
     #    DatabaseRewinder['the_db_name']
