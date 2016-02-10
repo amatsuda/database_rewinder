@@ -21,22 +21,6 @@ module DatabaseRewinder
       Cleaner.new(config: config, connection_name: connection_name, only: @only, except: @except).tap {|c| @cleaners << c}
     end
 
-    # In order to add another database to cleanup, you can give its connection name in on of the forms below:
-    #
-    #    # the simplest form
-    #    DatabaseRewinder['the_db_name']
-    #
-    # or
-    #
-    #    # with connection: key
-    #    DatabaseRewinder[connection: 'the_db_name']
-    #
-    # or
-    #
-    #    # DatabaseCleaner compatible
-    #    DatabaseRewinder[:active_record, connection: 'the_db_name']
-    #
-    # You can cleanup multiple databases for each test using this configuration.
     def [](connection)
       @cleaners.detect {|c| c.connection_name == connection} || create_cleaner(connection)
     end
