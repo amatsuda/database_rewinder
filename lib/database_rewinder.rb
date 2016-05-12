@@ -58,6 +58,7 @@ module DatabaseRewinder
     end
 
     def clean
+      return if @pause
       if @clean_all
         clean_all
       else
@@ -66,7 +67,19 @@ module DatabaseRewinder
     end
 
     def clean_all
+      return if @pause
       cleaners.each(&:clean_all)
+    end
+
+    # Pause and Resume are meant to be called whenever DatabaseRewinder should not clean between tests.
+    # These methods assume that DatabaseRewinder is being called after every test run.
+    # If not being called in a before block of any kind, .clean or .clean_all must be called after .resume
+    def pause
+      @pause = true
+    end
+
+    def resume
+      @pause = false
     end
 
     # cache AR connection.tables

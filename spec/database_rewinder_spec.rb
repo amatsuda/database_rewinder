@@ -10,7 +10,7 @@ describe DatabaseRewinder do
       after do
         DatabaseRewinder.database_configuration = nil
       end
-      subject { DatabaseRewinder.instance_variable_get(:'@cleaners').map {|c| c.connection_name} }
+      subject { DatabaseRewinder.instance_variable_get(:'@cleaners').map { |c| c.connection_name } }
 
       context 'simply giving a connection name only' do
         before do
@@ -59,7 +59,7 @@ describe DatabaseRewinder do
       DatabaseRewinder.database_configuration = {'foo' => {'adapter' => 'sqlite3', 'database' => 'db/test_record_inserted_table.sqlite3'}}
       @cleaner = DatabaseRewinder.create_cleaner 'foo'
       connection = double('connection').as_null_object
-      connection.instance_variable_set :'@config', {adapter: 'sqlite3', database: File.expand_path('db/test_record_inserted_table.sqlite3', Rails.root) }
+      connection.instance_variable_set :'@config', {adapter: 'sqlite3', database: File.expand_path('db/test_record_inserted_table.sqlite3', Rails.root)}
       DatabaseRewinder.record_inserted_table(connection, sql)
     end
     after do
@@ -139,7 +139,7 @@ describe DatabaseRewinder do
     end
 
     context 'with only option' do
-      let(:options) { { only: ['foos'] } }
+      let(:options) { {only: ['foos']} }
       it 'should clean with only option and restore original one' do
         Foo.count.should == 0
         Bar.count.should == 1
@@ -148,7 +148,7 @@ describe DatabaseRewinder do
     end
 
     context 'with except option' do
-      let(:options) { { except: ['bars'] } }
+      let(:options) { {except: ['bars']} }
       it 'should clean with except option and restore original one' do
         Foo.count.should == 0
         Bar.count.should == 1
@@ -160,7 +160,7 @@ describe DatabaseRewinder do
   describe '.strategy=' do
     context 'call first with options' do
       before do
-        DatabaseRewinder.strategy = :truncate, { only: ['foos'], except: ['bars'] }
+        DatabaseRewinder.strategy = :truncate, {only: ['foos'], except: ['bars']}
       end
 
       it 'should set options' do
@@ -176,7 +176,7 @@ describe DatabaseRewinder do
 
       context 'call again with different options' do
         before do
-          DatabaseRewinder.strategy = :truncate, { only: ['bazs'], except: [] }
+          DatabaseRewinder.strategy = :truncate, {only: ['bazs'], except: []}
         end
 
         it 'should overwrite options' do
@@ -190,6 +190,31 @@ describe DatabaseRewinder do
           expect(cleaner.instance_variable_get(:@except)).to eq([])
         end
       end
+    end
+  end
+
+  describe '.pause' do
+
+    it 'should not clean initially' do
+      DatabaseRewinder.pause
+      Foo.create! name: 'foo1'
+      Bar.create! name: 'bar1'
+      DatabaseRewinder.clean
+      Foo.count.should == 1
+      Bar.count.should == 1
+    end
+
+    it 'should clean after calling .resume' do
+      DatabaseRewinder.pause
+      Foo.create! name: 'foo1'
+      Bar.create! name: 'bar1'
+      DatabaseRewinder.clean
+      Foo.count.should == 1
+      Bar.count.should == 1
+      DatabaseRewinder.resume
+      DatabaseRewinder.clean
+      Foo.count.should == 0
+      Bar.count.should == 0
     end
   end
 end
