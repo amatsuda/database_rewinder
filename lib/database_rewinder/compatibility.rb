@@ -4,6 +4,16 @@ module DatabaseRewinder
       cleaners.each {|c| c.clean_with(*args)}
     end
 
+    def cleaning(&block)
+      begin
+        yield
+      ensure
+        cleaners.each do |cleaner|
+          cleaner.clean_all
+        end
+      end
+    end
+
     def start; end
 
     def strategy=(args)
