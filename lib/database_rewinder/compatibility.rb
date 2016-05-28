@@ -5,11 +5,9 @@ module DatabaseRewinder
     end
 
     def cleaning(&block)
-      begin
-        yield
-      ensure
-        clean
-      end
+      yield
+    ensure
+      clean
     end
 
     def start; end
