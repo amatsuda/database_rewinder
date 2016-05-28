@@ -157,6 +157,31 @@ describe DatabaseRewinder do
     end
   end
 
+  describe '.cleaning' do
+    context 'without exception' do
+      before do
+        DatabaseRewinder.cleaning do
+          Foo.create! name: 'foo1'
+        end
+      end
+
+      it 'should clean' do
+        expect(Foo.count).to be_zero
+      end
+    end
+
+    context 'with exception' do
+      it 'should clean regardless of exception' do
+        expect {
+          DatabaseRewinder.cleaning do
+            Foo.create! name: 'foo1'; fail
+          end
+        }.to raise_error
+        expect(Foo.count).to be_zero
+      end
+    end
+  end
+
   describe '.strategy=' do
     context 'call first with options' do
       before do
