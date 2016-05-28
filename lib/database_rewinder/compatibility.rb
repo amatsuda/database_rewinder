@@ -8,9 +8,7 @@ module DatabaseRewinder
       begin
         yield
       ensure
-        cleaners.each do |cleaner|
-          cleaner.clean_all
-        end
+        clean
       end
     end
 
