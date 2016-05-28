@@ -44,13 +44,13 @@ Do `clean` in `after(:each)`. And do `clean_all` or `clean_with` in `before(:sui
 
 ```ruby
 RSpec.configure do |config|
-  config.before :suite do
+  config.before(:suite) do
     DatabaseRewinder.clean_all
     # or
     # DatabaseRewinder.clean_with :any_arg_that_would_be_actually_ignored_anyway
   end
 
-  config.after :each do
+  config.after(:each) do
     DatabaseRewinder.clean
   end
 end
