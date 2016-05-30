@@ -4,7 +4,7 @@ module DatabaseRewinder
       cleaners.each {|c| c.clean_with(*args)}
     end
 
-    def cleaning(&block)
+    def cleaning
       yield
     ensure
       clean
