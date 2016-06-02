@@ -76,6 +76,10 @@ describe DatabaseRewinder do
         let(:sql) { 'INSERT INTO "foos" ("name") VALUES (?)' }
         its(:inserted_tables) { should eq ['foos'] }
       end
+      context 'without "INTO"' do
+        let(:sql) { 'INSERT "foos" ("name") VALUES (?)' }
+        its(:inserted_tables) { should eq ['foos'] }
+      end
     end
 
     context 'Database accepts more than one dots in an object notation (e.g. SQLServer)' do
