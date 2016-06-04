@@ -1,10 +1,13 @@
 require 'bundler'
 require 'bundler/setup'
 require "bundler/gem_tasks"
-require 'rspec/core'
-require 'rspec/core/rake_task'
+require 'rake/testtask'
 
-task :noop do; end
-task :default => :spec
+Rake::TestTask.new do |t|
+  t.libs << 'test'
+  t.pattern = 'test/**/*_test.rb'
+  t.warning = true
+  t.verbose = true
+end
 
-RSpec::Core::RakeTask.new(:spec => :noop)
+task default: :test

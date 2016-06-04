@@ -4,14 +4,17 @@ $LOAD_PATH.unshift(File.join(__dir__, '..', 'lib'))
 $LOAD_PATH.unshift(__dir__)
 
 require 'rails'
+require 'active_record'
 require 'database_rewinder'
 require 'fake_app'
+require 'test/unit/rails/test_help'
 
-RSpec.configure do |config|
-  config.before :all do
-    CreateAllTables.up unless ActiveRecord::Base.connection.table_exists? 'foos'
-  end
-  config.after :each do
+CreateAllTables.up unless ActiveRecord::Base.connection.table_exists? 'foos'
+
+module DeleteAllTables
+  def teardown
+    super
     [Foo, Bar, Baz, Quu].each {|m| m.delete_all }
   end
 end
+ActiveSupport::TestCase.prepend DeleteAllTables
