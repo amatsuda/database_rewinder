@@ -17,4 +17,4 @@ module DeleteAllTables
     [Foo, Bar, Baz, Quu].each {|m| m.delete_all }
   end
 end
-ActiveSupport::TestCase.prepend DeleteAllTables
+ActiveSupport::TestCase.send :prepend, DeleteAllTables
