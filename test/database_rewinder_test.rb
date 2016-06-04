@@ -45,7 +45,7 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
   end
 
   sub_test_case '.record_inserted_table' do
-    private def perform_insert(sql)
+    def perform_insert(sql)
       DatabaseRewinder.database_configuration = {'foo' => {'adapter' => 'sqlite3', 'database' => 'db/test_record_inserted_table.sqlite3'}}
       @cleaner = DatabaseRewinder.create_cleaner 'foo'
 
@@ -120,7 +120,7 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
   end
 
   sub_test_case '.clean_with' do
-    private def perform_clean(options)
+    def perform_clean(options)
       @cleaner = DatabaseRewinder.cleaners.first
       @only = @cleaner.instance_variable_get(:@only)
       @except = @cleaner.instance_variable_get(:@except)
