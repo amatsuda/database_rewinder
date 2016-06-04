@@ -18,3 +18,4 @@ test/version_tmp
 tmp
 log
 spec/*.sqlite3
+spec/db/*.sqlite3
