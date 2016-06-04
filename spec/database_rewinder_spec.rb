@@ -58,8 +58,7 @@ describe DatabaseRewinder do
     before do
       DatabaseRewinder.database_configuration = {'foo' => {'adapter' => 'sqlite3', 'database' => 'db/test_record_inserted_table.sqlite3'}}
       @cleaner = DatabaseRewinder.create_cleaner 'foo'
-      connection = double('connection').as_null_object
-      connection.instance_variable_set :'@config', {adapter: 'sqlite3', database: File.expand_path('db/test_record_inserted_table.sqlite3', Rails.root) }
+      connection = ::ActiveRecord::Base.sqlite3_connection(adapter: "sqlite3", database: File.expand_path('db/test_record_inserted_table.sqlite3', Rails.root))
       DatabaseRewinder.record_inserted_table(connection, sql)
     end
     after do
