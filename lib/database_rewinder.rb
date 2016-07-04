@@ -74,8 +74,8 @@ module DatabaseRewinder
       db = connection.pool.spec.config[:database]
       data_sources = connection.respond_to?(:data_sources) ? connection.data_sources : connection.tables
       @table_names_cache[db] ||= data_sources.reject do |t|
-        t == ActiveRecord::Migrator.schema_migrations_table_name ||
-        ActiveRecord::Base.respond_to?(:internal_metadata_table_name) && t == ActiveRecord::Base.internal_metadata_table_name
+        (t == ActiveRecord::Migrator.schema_migrations_table_name) ||
+        (ActiveRecord::Base.respond_to?(:internal_metadata_table_name) && (t == ActiveRecord::Base.internal_metadata_table_name))
       end
     end
   end
