@@ -9,7 +9,8 @@ require 'database_rewinder'
 require 'fake_app'
 require 'test/unit/rails/test_help'
 
-CreateAllTables.up unless ActiveRecord::Base.connection.table_exists? 'foos'
+migrated = ActiveRecord::Base.connection.respond_to?(:data_source_exists?) ? ActiveRecord::Base.connection.data_source_exists?('foos') : ActiveRecord::Base.connection.table_exists?('foos')
+CreateAllTables.up unless migrated
 
 module DeleteAllTables
   def teardown
