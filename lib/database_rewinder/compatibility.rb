@@ -38,7 +38,7 @@ module DatabaseRewinder
       if connection.nil?
         if orm.is_a? String
           connection = orm
-        elsif orm.is_a?(Hash) && orm.has_key?(:connection)
+        elsif orm.is_a?(Hash) && orm.key?(:connection)
           connection = orm[:connection]
         end
       end
