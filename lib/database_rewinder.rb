@@ -73,20 +73,11 @@ module DatabaseRewinder
     def all_table_names(connection)
       db = connection.pool.spec.config[:database]
       #NOTE connection.tables warns on AR 5 with some adapters
-      tables = deprecation_silencer.silence { connection.tables }
+      tables = ActiveSupport::Deprecation.silence { connection.tables }
       @table_names_cache[db] ||= tables.reject do |t|
         (t == ActiveRecord::Migrator.schema_migrations_table_name) ||
         (ActiveRecord::Base.respond_to?(:internal_metadata_table_name) && (t == ActiveRecord::Base.internal_metadata_table_name))
       end
-    end
-
-    def deprecation_silencer
-      @deprecation_silencer ||=
-        if defined?(ActiveSupport::Deprecation) && ActiveSupport::Deprecation.respond_to?(:silence)
-          ActiveSupport::Deprecation
-        else
-          ActiveRecord::Base.logger
-        end
     end
   end
 end
