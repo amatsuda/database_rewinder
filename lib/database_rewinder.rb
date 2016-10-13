@@ -71,10 +71,10 @@ module DatabaseRewinder
 
     # cache AR connection.tables
     def all_table_names(connection)
-      db = connection.pool.spec.config[:database]
+      cache_key = connection.pool.spec.config
       #NOTE connection.tables warns on AR 5 with some adapters
       tables = ActiveSupport::Deprecation.silence { connection.tables }
-      @table_names_cache[db] ||= tables.reject do |t|
+      @table_names_cache[cache_key] ||= tables.reject do |t|
         (t == ActiveRecord::Migrator.schema_migrations_table_name) ||
         (ActiveRecord::Base.respond_to?(:internal_metadata_table_name) && (t == ActiveRecord::Base.internal_metadata_table_name))
       end
