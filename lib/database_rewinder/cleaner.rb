@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module DatabaseRewinder
   class Cleaner
     attr_accessor :config, :connection_name, :only, :except, :inserted_tables, :pool

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module DatabaseRewinder
   module Compatibility
     def clean_with(*args)
