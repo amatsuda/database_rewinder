@@ -1,11 +1,17 @@
-test:
+sqlite3: &sqlite3
   adapter: sqlite3
   database: test.sqlite3
   pool: 5
   timeout: 5000
 
-test2:
+sqlite3_2: &sqlite3_2
   adapter: sqlite3
   database: test2.sqlite3
   pool: 5
   timeout: 5000
+
+test:
+  <<: *<%= ENV['DB'] %>
+
+test2:
+  <<: *<%= "#{ENV['DB']}_2" %>
