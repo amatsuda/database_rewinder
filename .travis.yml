@@ -2,6 +2,8 @@ language: ruby
 
 env:
   - DB=sqlite3
+  - DB=mysql
+  - DB=postgresql
 
 rvm:
   - 2.0.0
