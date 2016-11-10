@@ -2,6 +2,12 @@
 require 'test_helper'
 
 class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
+  if ActiveRecord::VERSION::STRING >= '5'
+    self.use_transactional_tests = false
+  else
+    self.use_transactional_fixtures = false
+  end
+
   setup do
     DatabaseRewinder.init
   end
@@ -117,12 +123,6 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
 
   if ActiveRecord::VERSION::STRING >= '4'
     sub_test_case 'migrations' do
-      if ActiveRecord::VERSION::STRING >= '5'
-        self.use_transactional_tests = false
-      else
-        self.use_transactional_fixtures = false
-      end
-
       test '.clean_all should not touch AR::SchemaMigration' do
         begin
           ActiveRecord::Base.connection.initialize_schema_migrations_table
