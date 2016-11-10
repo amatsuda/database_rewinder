@@ -10,7 +10,7 @@ class DatabaseRewinder::InsertRecorderTest < ActiveSupport::TestCase
   end
 
   test '#execute' do
-    cleaner = DatabaseRewinder.instance_variable_get(:'@cleaners').detect {|c| c.db == 'test.sqlite3'}
+    cleaner = DatabaseRewinder.instance_variable_get(:'@cleaners').detect {|c| c.db == (ENV['DB'] == 'sqlite3' ? 'test.sqlite3' : 'test')}
 
     assert_equal %w(foos bars), cleaner.inserted_tables
     assert_not_nil cleaner.pool
