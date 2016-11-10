@@ -11,22 +11,31 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
       DatabaseRewinder.database_configuration = nil
     end
     sub_test_case 'for connecting to an arbitrary database' do
+      def assert_cleaners_added(cleaner_names)
+        connection_names =  DatabaseRewinder.instance_variable_get(:'@cleaners').map {|c| c.connection_name}
+        yield
+        assert_equal cleaner_names, DatabaseRewinder.instance_variable_get(:'@cleaners').map {|c| c.connection_name} - connection_names
+      end
+
       test 'simply giving a connection name only' do
-        DatabaseRewinder.database_configuration = {'aaa' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
-        DatabaseRewinder['aaa']
-        assert_equal ['aaa'], DatabaseRewinder.instance_variable_get(:'@cleaners').map {|c| c.connection_name}
+        assert_cleaners_added ['aaa'] do
+          DatabaseRewinder.database_configuration = {'aaa' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
+          DatabaseRewinder['aaa']
+        end
       end
 
       test 'giving a connection name via Hash with :connection key' do
-        DatabaseRewinder.database_configuration = {'bbb' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
-        DatabaseRewinder[connection: 'bbb']
-        assert_equal ['bbb'], DatabaseRewinder.instance_variable_get(:'@cleaners').map {|c| c.connection_name}
+        assert_cleaners_added ['bbb'] do
+          DatabaseRewinder.database_configuration = {'bbb' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
+          DatabaseRewinder[connection: 'bbb']
+        end
       end
 
       test 'the Cleaner compatible syntax' do
-        DatabaseRewinder.database_configuration = {'ccc' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
-        DatabaseRewinder[:aho, connection: 'ccc']
-        assert_equal ['ccc'], DatabaseRewinder.instance_variable_get(:'@cleaners').map {|c| c.connection_name}
+        assert_cleaners_added ['ccc'] do
+          DatabaseRewinder.database_configuration = {'ccc' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
+          DatabaseRewinder[:aho, connection: 'ccc']
+        end
       end
     end
 
