@@ -51,7 +51,7 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
     end
 
     def perform_insert(sql)
-      @cleaner = DatabaseRewinder.instance_variable_get(:'@cleaners').detect {|c| c.db == (ENV['DB'] == 'sqlite3' ? 'test.sqlite3' : 'test')}
+      @cleaner = DatabaseRewinder.instance_variable_get(:'@cleaners').detect {|c| c.db == (ENV['DB'] == 'sqlite3' ? 'database_rewinder_test.sqlite3' : 'database_rewinder_test')}
 
       connection = ::ActiveRecord::Base.connection
       DatabaseRewinder.record_inserted_table(connection, sql)
