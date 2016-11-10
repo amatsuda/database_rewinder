@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 require_relative 'multiple_statements_executor'
 
-module DatabaseRewinder
-  using MultipleStatementsExecutor
+using DatabaseRewinder::MultipleStatementsExecutor
 
+module DatabaseRewinder
   class Cleaner
     attr_accessor :config, :connection_name, :only, :except, :inserted_tables, :pool
 
