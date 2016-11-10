@@ -46,11 +46,14 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
   end
 
   sub_test_case '.record_inserted_table' do
-    def perform_insert(sql)
-      DatabaseRewinder.database_configuration = {'foo' => {'adapter' => 'sqlite3', 'database' => 'test_record_inserted_table.sqlite3'}}
-      @cleaner = DatabaseRewinder.create_cleaner 'foo'
+    setup do
+      DatabaseRewinder.cleaners
+    end
 
-      connection = ::ActiveRecord::Base.sqlite3_connection(adapter: "sqlite3", database: File.expand_path('test_record_inserted_table.sqlite3', Rails.root))
+    def perform_insert(sql)
+      @cleaner = DatabaseRewinder.instance_variable_get(:'@cleaners').detect {|c| c.db == (ENV['DB'] == 'sqlite3' ? 'test.sqlite3' : 'test')}
+
+      connection = ::ActiveRecord::Base.connection
       DatabaseRewinder.record_inserted_table(connection, sql)
     end
     teardown do
