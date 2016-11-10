@@ -7,7 +7,7 @@ module DatabaseRewinder
         %w(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter ActiveRecord::ConnectionAdapters::Mysql2Adapter ActiveRecord::ConnectionAdapters::SQLite3Adapter).include? self.class.name
       end
 
-      def execute_multiple(sql, name = nil)
+      def execute_multiple(sql)
         #TODO Use ADAPTER_NAME when we've dropped AR 4.1 support
         case self.class.name
         when 'ActiveRecord::ConnectionAdapters::PostgreSQLAdapter'
@@ -29,7 +29,7 @@ module DatabaseRewinder
         when 'ActiveRecord::ConnectionAdapters::SQLite3Adapter'
           log(sql) { @connection.execute_batch sql }
         else
-          execute sql, name
+          execute sql
         end
       end
     end
