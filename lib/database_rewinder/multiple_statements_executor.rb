@@ -3,7 +3,7 @@ module DatabaseRewinder
   module MultipleStatementsExecutor
     refine ActiveRecord::ConnectionAdapters::AbstractAdapter do
       def supports_multiple_statements?
-        true
+        %w(PostgreSQL Mysql2 SQLite).include? self.class::ADAPTER_NAME
       end
 
       def execute_multiple(sql, name = nil)
