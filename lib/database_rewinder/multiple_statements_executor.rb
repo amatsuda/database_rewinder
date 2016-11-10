@@ -21,7 +21,11 @@ module DatabaseRewinder
             # opens another connection to the DB
             client = Mysql2::Client.new query_options
             begin
-              log(sql) { client.query sql }
+              result = log(sql) { client.query sql }
+              while client.next_result
+                # just to make sure that all queries are finished
+                result = client.store_result
+              end
             ensure
               client.close
             end
