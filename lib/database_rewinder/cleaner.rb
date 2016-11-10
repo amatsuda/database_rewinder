@@ -1,5 +1,9 @@
 # frozen_string_literal: true
+require_relative 'multiple_statements_executor'
+
 module DatabaseRewinder
+  using MultipleStatementsExecutor
+
   class Cleaner
     attr_accessor :config, :connection_name, :only, :except, :inserted_tables, :pool
 
@@ -46,8 +50,12 @@ module DatabaseRewinder
       return if tables.empty?
 
       ar_conn.disable_referential_integrity do
-        tables.each do |table_name|
-          ar_conn.execute "DELETE FROM #{ar_conn.quote_table_name(table_name)};"
+        if ar_conn.supports_multiple_statements?
+          ar_conn.execute_multiple tables.map {|t| "DELETE FROM #{ar_conn.quote_table_name(t)}"}.join(';')
+        else
+          tables.each do |table_name|
+            ar_conn.execute "DELETE FROM #{ar_conn.quote_table_name(table_name)};"
+          end
         end
       end
     end
