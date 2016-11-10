@@ -3,14 +3,16 @@ module DatabaseRewinder
   module MultipleStatementsExecutor
     refine ActiveRecord::ConnectionAdapters::AbstractAdapter do
       def supports_multiple_statements?
-        %w(PostgreSQL Mysql2 SQLite).include? self.class::ADAPTER_NAME
+        #TODO Use ADAPTER_NAME when we've dropped AR 4.1 support
+        %w(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter ActiveRecord::ConnectionAdapters::Mysql2Adapter ActiveRecord::ConnectionAdapters::SQLite3Adapter).include? self.class.name
       end
 
       def execute_multiple(sql, name = nil)
-        case self.class::ADAPTER_NAME
-        when 'PostgreSQL'
+        #TODO Use ADAPTER_NAME when we've dropped AR 4.1 support
+        case self.class.name
+        when 'ActiveRecord::ConnectionAdapters::PostgreSQLAdapter'
           log(sql) { @connection.exec sql }
-        when 'Mysql2'
+        when 'ActiveRecord::ConnectionAdapters::Mysql2Adapter'
           query_options = @connection.query_options.dup
           if query_options[:connect_flags] & Mysql2::Client::MULTI_STATEMENTS != 0
             log(sql) { @connection.query sql }
@@ -24,7 +26,7 @@ module DatabaseRewinder
               client.close
             end
           end
-        when 'SQLite'
+        when 'ActiveRecord::ConnectionAdapters::SQLite3Adapter'
           log(sql) { @connection.execute_batch sql }
         else
           execute sql, name
