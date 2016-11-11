@@ -37,7 +37,7 @@ module DatabaseRewinder
         when 'ActiveRecord::ConnectionAdapters::SQLite3Adapter'
           log(sql) { @connection.execute_batch sql }
         else
-          execute sql
+          raise 'Multiple deletion is not supported with the current database adapter.'
         end
       end
     end
