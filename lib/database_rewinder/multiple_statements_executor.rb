@@ -15,20 +15,20 @@ module DatabaseRewinder
         when 'ActiveRecord::ConnectionAdapters::Mysql2Adapter'
           query_options = @connection.query_options.dup
           if query_options[:connect_flags] & Mysql2::Client::MULTI_STATEMENTS != 0
-            result = log(sql) { @connection.query sql }
+            _result = log(sql) { @connection.query sql }
             while @connection.next_result
               # just to make sure that all queries are finished
-              result = @connection.store_result
+              _result = @connection.store_result
             end
           else
             query_options[:connect_flags] |= Mysql2::Client::MULTI_STATEMENTS
             # opens another connection to the DB
             client = Mysql2::Client.new query_options
             begin
-              result = log(sql) { client.query sql }
+              _result = log(sql) { client.query sql }
               while client.next_result
                 # just to make sure that all queries are finished
-                result = client.store_result
+                _result = client.store_result
               end
             ensure
               client.close
