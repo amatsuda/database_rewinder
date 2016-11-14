@@ -32,8 +32,8 @@ end
 class CreateAllTables < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.establish_connection ENV['DB'].to_sym
-    create_table(:foos) {|t| t.string :name }
     create_table(:bars) {|t| t.string :name }
+    create_table(:foos) {|t| t.string :name; t.references :bar, foreign_key: true }
     create_table(:bazs) {|t| t.string :name }
 
     test2_connection = ActiveRecord::Base.establish_connection("#{ENV['DB']}_2".to_sym).connection

@@ -113,8 +113,8 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
   end
 
   test '.clean' do
-    Foo.create! name: 'foo1'
-    Bar.create! name: 'bar1'
+    bar = Bar.create! name: 'bar1'
+    Foo.create! name: 'foo1', bar_id: bar.id
     DatabaseRewinder.clean
 
     assert_equal 0, Foo.count
