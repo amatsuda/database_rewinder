@@ -1,5 +1,7 @@
 language: ruby
 
+cache: bundler
+
 env:
   - DB=sqlite3
   - DB=mysql
