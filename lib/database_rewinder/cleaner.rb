@@ -49,10 +49,10 @@ module DatabaseRewinder
       tables -= @except if @except.any?
       return if tables.empty?
 
-      ar_conn.disable_referential_integrity do
-        if tables.many? && ar_conn.supports_multiple_statements?
-          ar_conn.execute_multiple tables.map {|t| "DELETE FROM #{ar_conn.quote_table_name(t)}"}.join(';')
-        else
+      if tables.many? && ar_conn.supports_multiple_statements?
+        ar_conn.execute_multiple tables.map {|t| "DELETE FROM #{ar_conn.quote_table_name(t)}"}.join(';')
+      else
+        ar_conn.disable_referential_integrity do
           tables.each do |table_name|
             ar_conn.execute "DELETE FROM #{ar_conn.quote_table_name(table_name)};"
           end
