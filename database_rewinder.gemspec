@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'sqlite3'
   spec.add_development_dependency 'mysql2'
   spec.add_development_dependency 'pg'
+  spec.required_ruby_version = '>= 2.0.0'
 end
