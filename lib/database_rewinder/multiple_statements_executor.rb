@@ -25,6 +25,7 @@ module DatabaseRewinder
             # opens another connection to the DB
             client = Mysql2::Client.new query_options
             begin
+              # disable_referential_integrity
               client.query("SET FOREIGN_KEY_CHECKS = 0")
               _result = log(sql) { client.query sql }
               while client.next_result
