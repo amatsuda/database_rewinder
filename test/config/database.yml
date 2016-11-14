@@ -1,12 +1,12 @@
 sqlite3: &sqlite3
   adapter: sqlite3
-  database: database_rewinder_test.sqlite3
+  database: db/database_rewinder_test.sqlite3
   pool: 5
   timeout: 5000
 
 sqlite3_2: &sqlite3_2
   adapter: sqlite3
-  database: database_rewinder_test2.sqlite3
+  database: db/database_rewinder_test2.sqlite3
   pool: 5
   timeout: 5000
 
