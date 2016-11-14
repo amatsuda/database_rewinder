@@ -52,10 +52,10 @@ module DatabaseRewinder
 
   class Cleaner
     module Compatibility
-      def clean_with(_strategy, only: nil, except: nil, **)
+      def clean_with(_strategy, only: nil, except: nil, multiple: true, **)
         originals = @only, @except
         self.only, self.except = Array(only), Array(except)
-        clean_all
+        clean_all multiple: multiple
       ensure
         self.only, self.except = originals
       end
