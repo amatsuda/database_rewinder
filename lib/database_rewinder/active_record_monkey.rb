@@ -13,6 +13,7 @@ module DatabaseRewinder
   end
 end
 
+#FIXME can we not load 'em?
 begin
   require 'active_record/connection_adapters/sqlite3_adapter'
   ::ActiveRecord::ConnectionAdapters::SQLite3Adapter.send :prepend, DatabaseRewinder::InsertRecorder
