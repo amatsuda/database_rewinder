@@ -58,16 +58,16 @@ module DatabaseRewinder
       end
     end
 
-    def clean
+    def clean(multiple: true)
       if @clean_all
-        clean_all
+        clean_all multiple: multiple
       else
-        cleaners.each(&:clean)
+        cleaners.each {|c| c.clean multiple: multiple}
       end
     end
 
-    def clean_all
-      cleaners.each(&:clean_all)
+    def clean_all(multiple: true)
+      cleaners.each {|c| c.clean_all multiple: multiple}
     end
 
     # cache AR connection.tables

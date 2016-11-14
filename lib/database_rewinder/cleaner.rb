@@ -16,7 +16,7 @@ module DatabaseRewinder
       config['database']
     end
 
-    def clean
+    def clean(multiple: true)
       return if !pool || inserted_tables.empty?
 
       # When the application uses multiple database connections, a connection
@@ -24,19 +24,19 @@ module DatabaseRewinder
       # In this case, we have to reconnect to the database to clean inserted
       # tables.
       with_automatic_reconnect(pool) do
-        delete_all (ar_conn = pool.connection), DatabaseRewinder.all_table_names(ar_conn) & inserted_tables
+        delete_all (ar_conn = pool.connection), DatabaseRewinder.all_table_names(ar_conn) & inserted_tables, multiple: multiple
       end
       reset
     end
 
-    def clean_all
+    def clean_all(multiple: true)
       if pool
         ar_conn = pool.connection
-        delete_all ar_conn, DatabaseRewinder.all_table_names(ar_conn)
+        delete_all ar_conn, DatabaseRewinder.all_table_names(ar_conn), multiple: multiple
       else
         require 'database_rewinder/dummy_model'
         DummyModel.with_temporary_connection(config) do |temporary_connection|
-          delete_all temporary_connection, DatabaseRewinder.all_table_names(temporary_connection)
+          delete_all temporary_connection, DatabaseRewinder.all_table_names(temporary_connection), multiple: multiple
         end
       end
 
@@ -44,12 +44,12 @@ module DatabaseRewinder
     end
 
     private
-    def delete_all(ar_conn, tables)
+    def delete_all(ar_conn, tables, multiple: true)
       tables = tables & @only if @only.any?
       tables -= @except if @except.any?
       return if tables.empty?
 
-      if tables.many? && ar_conn.supports_multiple_statements?
+      if multiple && tables.many? && ar_conn.supports_multiple_statements?
         ar_conn.execute_multiple tables.map {|t| "DELETE FROM #{ar_conn.quote_table_name(t)}"}.join(';')
       else
         ar_conn.disable_referential_integrity do
