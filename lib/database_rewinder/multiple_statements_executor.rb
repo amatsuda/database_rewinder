@@ -13,8 +13,7 @@ module DatabaseRewinder
         when 'ActiveRecord::ConnectionAdapters::PostgreSQLAdapter'
           disable_referential_integrity { log(sql) { @connection.exec sql } }
         when 'ActiveRecord::ConnectionAdapters::Mysql2Adapter'
-          query_options = @connection.query_options.dup
-          if query_options[:connect_flags] & Mysql2::Client::MULTI_STATEMENTS != 0
+          if @connection.query_options[:connect_flags] & Mysql2::Client::MULTI_STATEMENTS != 0
             disable_referential_integrity do
               _result = log(sql) { @connection.query sql }
               while @connection.next_result
@@ -23,6 +22,7 @@ module DatabaseRewinder
               end
             end
           else
+            query_options = @connection.query_options.dup
             query_options[:connect_flags] |= Mysql2::Client::MULTI_STATEMENTS
             # opens another connection to the DB
             client = Mysql2::Client.new query_options
