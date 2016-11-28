@@ -50,12 +50,19 @@ module DatabaseRewinder
       return if tables.empty?
 
       if multiple && tables.many? && ar_conn.supports_multiple_statements?
-        ar_conn.execute_multiple tables.map {|t| "DELETE FROM #{ar_conn.quote_table_name(t)}"}.join(';')
-      else
-        ar_conn.disable_referential_integrity do
-          tables.each do |table_name|
-            ar_conn.execute "DELETE FROM #{ar_conn.quote_table_name(table_name)};"
-          end
+        #TODO Use ADAPTER_NAME when we've dropped AR 4.1 support
+        if (ar_conn.class.name == 'ActiveRecord::ConnectionAdapters::Mysql2Adapter') && ar_conn.transaction_open?
+          # Print the warning message, then fall back to non-multiple deletion
+          Kernel.warn "WARNING: You may be executing DatabaseRewinder inside a transactional test. You're presumably misconfiguring your tests. Please read DatabaseRewinder's document, and properly configure your tests."
+        else
+          ar_conn.execute_multiple tables.map {|t| "DELETE FROM #{ar_conn.quote_table_name(t)}"}.join(';')
+          return
+        end
+      end
+
+      ar_conn.disable_referential_integrity do
+        tables.each do |table_name|
+          ar_conn.execute "DELETE FROM #{ar_conn.quote_table_name(table_name)};"
         end
       end
     end
