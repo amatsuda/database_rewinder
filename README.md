@@ -91,7 +91,7 @@ You would occasionally hit some weird errors (e.g. query execution timeout) beca
 
 #### 1. Properly understand what `use_transactional_tests` means, and consider turning it off
 
-`use\_transactional\_tests` is the option that surrounds each of your test case with a DB transaction to roll back all your test data after each test run.
+`use_transactional_tests` is the option that surrounds each of your test case with a DB transaction to roll back all your test data after each test run.
 So far as this works properly, you won't really need to use database\_rewinder.
 However, this simple mechanism doesn't work well when you're running integration tests with capybara + js mode.
 In cases of this situation, bundle database\_rewinder and add the following configuration.
