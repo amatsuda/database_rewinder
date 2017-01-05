@@ -29,7 +29,7 @@ class Quu < ActiveRecord::Base
 end
 
 # migrations
-class CreateAllTables < ActiveRecord::Migration
+class CreateAllTables < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[5.0] : ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.establish_connection ENV['DB'].to_sym
     create_table(:bars) {|t| t.string :name }
