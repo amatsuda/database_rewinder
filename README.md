@@ -105,7 +105,7 @@ end
 ```
 
 #### 2. Cleaning with `multiple: false` option
-If you're really sure you need to keep using transational tests + database\_rewinder for some reason, then explicitly pass in `multiple: false` option to `DatabaseRewinder.clean_all` and `DatabaseRewinder.clean` invocations as follows. Note that you won't be able to get full performance merit that database\_rewinder provides though.
+If you're really sure you need to keep using transactional tests + database\_rewinder for some reason, then explicitly pass in `multiple: false` option to `DatabaseRewinder.clean_all` and `DatabaseRewinder.clean` invocations as follows. Note that you won't be able to get full performance merit that database\_rewinder provides though.
 
 ```ruby
 RSpec.configure do |config|
