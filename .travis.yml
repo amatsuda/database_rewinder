@@ -37,5 +37,3 @@ matrix:
       gemfile: gemfiles/rails_40.gemfile
     - rvm: 2.4.0
       gemfile: gemfiles/rails_41.gemfile
-    - rvm: 2.4.0
-      gemfile: gemfiles/rails_42.gemfile
