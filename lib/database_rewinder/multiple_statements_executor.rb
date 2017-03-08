@@ -13,6 +13,7 @@ module DatabaseRewinder
         when 'ActiveRecord::ConnectionAdapters::PostgreSQLAdapter'
           sql = tables_to_one_delete_sql tables
           disable_referential_integrity { log(sql) { @connection.exec sql } }
+
         when 'ActiveRecord::ConnectionAdapters::Mysql2Adapter'
           if @connection.query_options[:connect_flags] & Mysql2::Client::MULTI_STATEMENTS != 0
             disable_referential_integrity do
@@ -23,6 +24,7 @@ module DatabaseRewinder
                 _result = @connection.store_result
               end
             end
+
           else
             query_options = @connection.query_options.dup
             query_options[:connect_flags] |= Mysql2::Client::MULTI_STATEMENTS
@@ -41,9 +43,11 @@ module DatabaseRewinder
               client.close
             end
           end
+
         when 'ActiveRecord::ConnectionAdapters::SQLite3Adapter'
           sql = tables_to_one_delete_sql tables
           disable_referential_integrity { log(sql) { @connection.execute_batch sql } }
+
         else
           raise 'Multiple deletion is not supported with the current database adapter.'
         end
