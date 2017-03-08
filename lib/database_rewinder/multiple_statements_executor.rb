@@ -7,6 +7,10 @@ module DatabaseRewinder
         %w(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter ActiveRecord::ConnectionAdapters::Mysql2Adapter ActiveRecord::ConnectionAdapters::SQLite3Adapter).include? self.class.name
       end
 
+      def delete_multiple(tables)
+        execute_multiple tables.map {|t| "DELETE FROM #{quote_table_name(t)}"}.join(';')
+      end
+
       def execute_multiple(sql)
         #TODO Use ADAPTER_NAME when we've dropped AR 4.1 support
         case self.class.name
