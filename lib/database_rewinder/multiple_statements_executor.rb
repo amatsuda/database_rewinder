@@ -8,17 +8,15 @@ module DatabaseRewinder
       end
 
       def delete_multiple(tables)
-        execute_multiple tables.map {|t| "DELETE FROM #{quote_table_name(t)}"}.join(';')
-      end
-
-      def execute_multiple(sql)
         #TODO Use ADAPTER_NAME when we've dropped AR 4.1 support
         case self.class.name
         when 'ActiveRecord::ConnectionAdapters::PostgreSQLAdapter'
+          sql = tables_to_one_delete_sql tables
           disable_referential_integrity { log(sql) { @connection.exec sql } }
         when 'ActiveRecord::ConnectionAdapters::Mysql2Adapter'
           if @connection.query_options[:connect_flags] & Mysql2::Client::MULTI_STATEMENTS != 0
             disable_referential_integrity do
+              sql = tables_to_one_delete_sql tables
               _result = log(sql) { @connection.query sql }
               while @connection.next_result
                 # just to make sure that all queries are finished
@@ -33,6 +31,7 @@ module DatabaseRewinder
             begin
               # disable_referential_integrity
               client.query("SET FOREIGN_KEY_CHECKS = 0")
+              sql = tables_to_one_delete_sql tables
               _result = log(sql) { client.query sql }
               while client.next_result
                 # just to make sure that all queries are finished
@@ -43,10 +42,16 @@ module DatabaseRewinder
             end
           end
         when 'ActiveRecord::ConnectionAdapters::SQLite3Adapter'
+          sql = tables_to_one_delete_sql tables
           disable_referential_integrity { log(sql) { @connection.execute_batch sql } }
         else
           raise 'Multiple deletion is not supported with the current database adapter.'
         end
+      end
+
+      private
+      def tables_to_one_delete_sql(tables)
+        tables.map {|t| "DELETE FROM #{quote_table_name(t)}"}.join(';')
       end
     end
   end
