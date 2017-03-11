@@ -88,6 +88,12 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
         perform_insert 'INSERT "foos" ("name") VALUES (?)'
         assert_equal ['foos'], @cleaner.inserted_tables
       end
+      test 'with space before "INSERT"' do
+        perform_insert <<-SQL
+          INSERT INTO "foos" ("name") VALUES (?)
+        SQL
+        assert_equal ['foos'], @cleaner.inserted_tables
+      end
     end
 
     sub_test_case 'Database accepts more than one dots in an object notation (e.g. SQLServer)' do
