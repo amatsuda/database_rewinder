@@ -26,21 +26,12 @@ module DatabaseRewinder
             end
 
           else
-            query_options = @connection.query_options.dup
-            query_options[:connect_flags] |= Mysql2::Client::MULTI_STATEMENTS
-            # opens another connection to the DB
-            client = Mysql2::Client.new query_options
-            begin
-              # disable_referential_integrity
-              client.query("SET FOREIGN_KEY_CHECKS = 0")
-              sql = tables_to_one_delete_sql tables
-              _result = log(sql) { client.query sql }
-              while client.next_result
-                # just to make sure that all queries are finished
-                _result = client.store_result
-              end
-            ensure
-              client.close
+            @connection.query 'drop procedure if exists rewind_em_all'
+            @connection.query <<-SQL
+create procedure rewind_em_all(in tables text, in num integer) begin declare i int default 0; while i < num do set i = i + 1; set @delete_sql = concat('DELETE FROM ', substring_index(substring_index(tables, ',', i), ',', -1)); prepare stmt from @delete_sql; execute stmt; deallocate prepare stmt; end while; end;
+SQL
+            disable_referential_integrity do
+              @connection.query "call rewind_em_all('#{tables.join(',')}', #{tables.length})"
             end
           end
 
