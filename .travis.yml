@@ -8,7 +8,6 @@ env:
   - DB=postgresql
 
 rvm:
-  - 2.0.0
   - 2.1.10
   - 2.2.6
   - 2.3.3
@@ -24,14 +23,8 @@ sudo: false
 
 matrix:
   exclude:
-    - rvm: 2.0.0
-      gemfile: gemfiles/rails_edge.gemfile
     - rvm: 2.1.10
       gemfile: gemfiles/rails_edge.gemfile
-    - rvm: 2.0.0
-      gemfile: gemfiles/rails_51.gemfile
-    - rvm: 2.0.0
-      gemfile: gemfiles/rails_50.gemfile
     - rvm: 2.1.10
       gemfile: gemfiles/rails_51.gemfile
     - rvm: 2.1.10
@@ -42,4 +35,7 @@ matrix:
       env: DB=sqlite3
     - rvm: 2.3.3
       gemfile: gemfiles/rails_40.gemfile
+      env: DB=sqlite3
+    - rvm: 2.0.0
+      gemfile: gemfiles/rails_42.gemfile
       env: DB=sqlite3
