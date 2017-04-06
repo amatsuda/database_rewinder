@@ -9,7 +9,7 @@ env:
 
 rvm:
   - 2.2.7
-  - 2.3.3
+  - 2.3.4
   - 2.4.1
 
 gemfile:
@@ -22,10 +22,10 @@ sudo: false
 
 matrix:
   include:
-    - rvm: 2.3.3
+    - rvm: 2.3.4
       gemfile: gemfiles/rails_41.gemfile
       env: DB=sqlite3
-    - rvm: 2.3.3
+    - rvm: 2.3.4
       gemfile: gemfiles/rails_40.gemfile
       env: DB=sqlite3
     - rvm: 2.1.10
