@@ -39,7 +39,7 @@ module DatabaseRewinder
       config = connection.instance_variable_get(:'@config')
       database = config[:database]
       #NOTE What's the best way to get the app dir besides Rails.root? I know Dir.pwd here might not be the right solution, but it should work in most cases...
-      root_dir = defined?(Rails) ? Rails.root : Dir.pwd
+      root_dir = defined?(Rails) && Rails.respond_to?(:root) ? Rails.root : Dir.pwd
       cleaner = cleaners.detect do |c|
         if (config[:adapter] == 'sqlite3') && (config[:database] != ':memory:')
           File.expand_path(c.db, root_dir) == File.expand_path(database, root_dir)
