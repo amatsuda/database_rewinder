@@ -94,6 +94,14 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
         SQL
         assert_equal ['foos'], @cleaner.inserted_tables
       end
+      test 'with basic LOAD DATA INFILE' do
+        perform_insert 'LOAD DATA  INFILE \'data.txt\' INTO TABLE foos'
+        assert_equal ['foos'], @cleaner.inserted_tables
+      end
+      test 'with full LOAD DATA INFILE' do
+        perform_insert 'LOAD DATA LOW_PRIORITY LOCAL INFILE \'data.txt\' REPLACE INTO TABLE foos'
+        assert_equal ['foos'], @cleaner.inserted_tables
+      end
     end
 
     sub_test_case 'Database accepts more than one dots in an object notation (e.g. SQLServer)' do
