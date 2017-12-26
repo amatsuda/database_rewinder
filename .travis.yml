@@ -8,9 +8,9 @@ env:
   - DB=postgresql
 
 rvm:
-  - 2.2.7
-  - 2.3.4
-  - 2.4.1
+  - 2.2.9
+  - 2.3.6
+  - 2.4.3
 
 gemfile:
   - gemfiles/rails_42.gemfile
@@ -22,10 +22,10 @@ sudo: false
 
 matrix:
   include:
-    - rvm: 2.3.4
+    - rvm: 2.3.6
       gemfile: gemfiles/rails_41.gemfile
       env: DB=sqlite3
-    - rvm: 2.3.4
+    - rvm: 2.3.6
       gemfile: gemfiles/rails_40.gemfile
       env: DB=sqlite3
     - rvm: 2.1.10
