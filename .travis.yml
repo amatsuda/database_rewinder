@@ -8,15 +8,15 @@ env:
   - DB=postgresql
 
 rvm:
-  - 2.2.9
-  - 2.3.6
-  - 2.4.3
   - 2.5.0
+  - 2.4.3
+  - 2.3.6
+  - 2.2.9
 
 gemfile:
-  - gemfiles/rails_42.gemfile
-  - gemfiles/rails_50.gemfile
   - gemfiles/rails_51.gemfile
+  - gemfiles/rails_50.gemfile
+  - gemfiles/rails_42.gemfile
   - gemfiles/rails_edge.gemfile
 
 sudo: false
