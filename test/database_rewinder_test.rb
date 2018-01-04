@@ -131,7 +131,7 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
     sub_test_case 'migrations' do
       test '.clean_all should not touch AR::SchemaMigration' do
         begin
-          ActiveRecord::Base.connection.initialize_schema_migrations_table
+          ActiveRecord::SchemaMigration.create_table
           ActiveRecord::SchemaMigration.create! version: '001'
           DatabaseRewinder.clean_all
 
