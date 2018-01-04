@@ -15,6 +15,7 @@ module DatabaseRewinderTestApp
 end
 
 require 'active_record/base'
+ActiveRecord::Tasks::DatabaseTasks.root ||= Rails.root
 ActiveRecord::Tasks::DatabaseTasks.drop_current ENV['DB']
 ActiveRecord::Tasks::DatabaseTasks.drop_current "#{ENV['DB']}_2"
 ActiveRecord::Tasks::DatabaseTasks.create_current ENV['DB']
