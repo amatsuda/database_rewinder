@@ -4,6 +4,16 @@ require_relative 'database_rewinder/cleaner'
 module DatabaseRewinder
   VERSION = Gem.loaded_specs['database_rewinder'].version.to_s
 
+  INSERT_REGEXP = /\A
+        \s*(?:
+          (?:LOAD\s+DATA(?:\s+(?:LOW_PRIORITY|CONCURRENT))?(?:\s+LOCAL)?\s+INFILE\s+\S+(?:\s+(REPLACE|IGNORE))?\s+INTO\s+TABLE)
+          |
+          (?:INSERT(?:\s+IGNORE)?(?:\s+INTO)?)
+        )
+        \s+
+        (?:\.*[`"]?(?<table_name>[^.\s`"]+)[`"]?)*
+      /ix
+
   class << self
     # Set your DB configuration here if you'd like to use something else than the AR configuration
     attr_writer :database_configuration
@@ -48,10 +58,10 @@ module DatabaseRewinder
         end
       end or return
 
-      match = sql.match(/\A\s*INSERT(?:\s+IGNORE)?(?:\s+INTO)?\s+(?:\.*[`"]?([^.\s`"]+)[`"]?)*/i)
+      match = sql.match(INSERT_REGEXP)
       return unless match
 
-      table = match[1]
+      table = match['table_name']
       if table
         cleaner.inserted_tables << table unless cleaner.inserted_tables.include? table
         cleaner.pool ||= connection.pool
