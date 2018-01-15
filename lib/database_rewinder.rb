@@ -6,7 +6,7 @@ module DatabaseRewinder
 
   INSERT_REGEXP = /\A
         \s*(?:
-          (?:LOAD\s+DATA(?:\s+(?:LOW_PRIORITY|CONCURRENT))?(?:\s+LOCAL)?\s+INFILE\s+\S+(?:\s+REPLACE|IGNORE)?\s+INTO\s+TABLE)
+          (?:LOAD\s+DATA(?:\s+(?:LOW_PRIORITY|CONCURRENT))?(?:\s+LOCAL)?\s+INFILE\s+\S+(?:\s+(REPLACE|IGNORE))?\s+INTO\s+TABLE)
           |
           (?:INSERT(?:\s+IGNORE)?(?:\s+INTO)?)
         )

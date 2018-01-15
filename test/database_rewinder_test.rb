@@ -98,8 +98,12 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
         perform_insert 'LOAD DATA  INFILE \'data.txt\' INTO TABLE foos'
         assert_equal ['foos'], @cleaner.inserted_tables
       end
-      test 'with full LOAD DATA INFILE' do
+      test 'with full LOAD DATA INFILE REPLACE' do
         perform_insert 'LOAD DATA LOW_PRIORITY LOCAL INFILE \'data.txt\' REPLACE INTO TABLE foos'
+        assert_equal ['foos'], @cleaner.inserted_tables
+      end
+      test 'with full LOAD DATA INFILE IGNORE' do
+        perform_insert 'LOAD DATA LOW_PRIORITY LOCAL INFILE \'data.txt\' IGNORE INTO TABLE foos'
         assert_equal ['foos'], @cleaner.inserted_tables
       end
     end
