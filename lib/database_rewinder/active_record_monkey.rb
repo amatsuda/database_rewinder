@@ -13,19 +13,6 @@ module DatabaseRewinder
   end
 end
 
-#FIXME can we not load 'em?
-begin
-  require 'active_record/connection_adapters/sqlite3_adapter'
-  ::ActiveRecord::ConnectionAdapters::SQLite3Adapter.send :prepend, DatabaseRewinder::InsertRecorder
-rescue LoadError
-end
-begin
-  require 'active_record/connection_adapters/postgresql_adapter'
-  ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.send :prepend, DatabaseRewinder::InsertRecorder
-rescue LoadError
-end
-begin
-  require 'active_record/connection_adapters/abstract_mysql_adapter'
-  ::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter.send :prepend, DatabaseRewinder::InsertRecorder
-rescue LoadError
+def (::ActiveRecord::ConnectionAdapters::AbstractAdapter).inherited(adapter)
+  adapter.prepend DatabaseRewinder::InsertRecorder
 end
