@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 4.1.0'
+gem 'pg', '~> 0.21'
 gem 'mysql2', '~> 0.3.13'
 gem 'nokogiri', RUBY_VERSION < '2.1' ? '~> 1.6.0' : '>= 1.7'
 
