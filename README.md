@@ -98,7 +98,7 @@ In cases of this situation, bundle database\_rewinder and add the following conf
 
 ```ruby
 RSpec.configure do |config|
-  config.use_transactional_examples = false
+  config.use_transactional_tests = false
 
   ...
 end
