@@ -94,6 +94,14 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
         SQL
         assert_equal ['foos'], @cleaner.inserted_tables
       end
+
+      test 'with multi statement query' do
+        perform_insert <<-SQL
+          INSERT INTO "foos" ("name") VALUES (?);
+          INSERT INTO "bars" ("name") VALUES (?)
+        SQL
+        assert_equal ['foos', 'bars'], @cleaner.inserted_tables
+      end
     end
 
     sub_test_case 'Database accepts more than one dots in an object notation (e.g. SQLServer)' do
