@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module DatabaseRewinder
   module MultipleStatementsExecutor
     refine ActiveRecord::ConnectionAdapters::AbstractAdapter do

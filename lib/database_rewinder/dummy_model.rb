@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module DatabaseRewinder
   class DummyModel < ActiveRecord::Base
     class << self

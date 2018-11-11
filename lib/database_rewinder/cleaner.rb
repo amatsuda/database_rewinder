@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative 'multiple_statements_executor'
 
 using DatabaseRewinder::MultipleStatementsExecutor
