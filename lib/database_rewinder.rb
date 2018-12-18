@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'database_rewinder/cleaner'
-
 module DatabaseRewinder
   VERSION = Gem.loaded_specs['database_rewinder'].version.to_s
 
@@ -92,4 +90,5 @@ begin
 rescue LoadError
   DatabaseRewinder.init
   require_relative 'database_rewinder/active_record_monkey'
+  require_relative 'database_rewinder/cleaner'
 end
