@@ -36,8 +36,6 @@ matrix:
     - rvm: 2.3.8
       gemfile: gemfiles/rails_40.gemfile
       env: DB=sqlite3
-    - rvm: 2.4.6
-      gemfile: gemfiles/rails_42.gemfile
     - rvm: 2.1.10
       gemfile: gemfiles/rails_42.gemfile
       env: DB=sqlite3
