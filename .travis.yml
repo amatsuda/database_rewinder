@@ -2,7 +2,7 @@ language: ruby
 
 before_install:
   - gem i rubygems-update -v '<3' && update_rubygems
-  - gem install bundler
+  - "ruby -e 'exit RUBY_VERSION.to_f >= 2.6' && gem up bundler || gem i bundler -v '<2'"
 
 cache: bundler
 
