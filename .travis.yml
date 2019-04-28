@@ -15,8 +15,6 @@ rvm:
   - 2.6.3
   - 2.5.5
   - 2.4.6
-  - 2.3.8
-  - 2.2.10
 
 gemfile:
   - gemfiles/rails_52.gemfile
@@ -35,6 +33,9 @@ matrix:
       env: DB=sqlite3
     - rvm: 2.3.8
       gemfile: gemfiles/rails_40.gemfile
+      env: DB=sqlite3
+    - rvm: 2.2.10
+      gemfile: gemfiles/rails_52.gemfile
       env: DB=sqlite3
     - rvm: 2.1.10
       gemfile: gemfiles/rails_42.gemfile
