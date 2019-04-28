@@ -23,28 +23,28 @@ matrix:
   include:
     - rvm: 2.6.3
       gemfile: gemfiles/rails_edge.gemfile
-      env: DB=sqlite3
+      env: DB=postgresql
     - rvm: 2.5.5
       gemfile: gemfiles/rails_51.gemfile
-      env: DB=sqlite3
+      env: DB=postgresql
     - rvm: 2.4.6
       gemfile: gemfiles/rails_50.gemfile
-      env: DB=sqlite3
+      env: DB=postgresql
     - rvm: 2.3.8
       gemfile: gemfiles/rails_41.gemfile
-      env: DB=sqlite3
+      env: DB=postgresql
     - rvm: 2.3.8
       gemfile: gemfiles/rails_40.gemfile
-      env: DB=sqlite3
+      env: DB=postgresql
     - rvm: 2.2.10
       gemfile: gemfiles/rails_52.gemfile
-      env: DB=sqlite3
+      env: DB=postgresql
     - rvm: 2.1.10
       gemfile: gemfiles/rails_42.gemfile
-      env: DB=sqlite3
+      env: DB=postgresql
     - rvm: 2.0.0
       gemfile: gemfiles/rails_42.gemfile
-      env: DB=sqlite3
+      env: DB=postgresql
 
   allow_failures:
     - gemfile: gemfiles/rails_edge.gemfile
