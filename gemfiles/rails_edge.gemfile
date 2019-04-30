@@ -5,5 +5,6 @@ git_source(:github) do |repo_name|
 end
 
 gem 'rails', github: 'rails/rails'
+gem 'selenium-webdriver'
 
 gemspec path: '../'
