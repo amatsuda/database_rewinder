@@ -1,45 +1,44 @@
-sqlite3: &sqlite3
+<% case ENV['DB']
+   when 'sqlite3' %>
+test:
   adapter: sqlite3
   database: db/database_rewinder_test.sqlite3
   pool: 5
   timeout: 5000
 
-sqlite3_2: &sqlite3_2
+test2:
   adapter: sqlite3
   database: db/database_rewinder_test2.sqlite3
   pool: 5
   timeout: 5000
 
-mysql: &mysql
-  adapter: mysql2
-  host: localhost
-  username: root
-  password:
-  database: database_rewinder_test
-
-mysql_2: &mysql_2
-  adapter: mysql2
-  host: localhost
-  username: root
-  password:
-  database: database_rewinder_test2
-
-postgresql: &postgresql
-  adapter: postgresql
-  host: localhost
-  username: postgres
-  password:
-  database: database_rewinder_test
-
-postgresql_2: &postgresql_2
-  adapter: postgresql
-  host: localhost
-  username: postgres
-  password:
-  database: database_rewinder_test2
-
+<% when 'mysql' %>
 test:
-  <<: *<%= ENV['DB'] %>
+  adapter: mysql2
+  host: localhost
+  username: root
+  password:
+  database: database_rewinder_test
 
 test2:
-  <<: *<%= "#{ENV['DB']}_2" %>
+  adapter: mysql2
+  host: localhost
+  username: root
+  password:
+  database: database_rewinder_test2
+
+<% when 'postgresql' %>
+test:
+  adapter: postgresql
+  host: localhost
+  username: postgres
+  password:
+  database: database_rewinder_test
+
+test2:
+  adapter: postgresql
+  host: localhost
+  username: postgres
+  password:
+  database: database_rewinder_test2
+<% end %>

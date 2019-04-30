@@ -17,30 +17,30 @@ load 'active_record/railties/databases.rake'
 
 require 'active_record/base'
 ActiveRecord::Tasks::DatabaseTasks.root ||= Rails.root
-ActiveRecord::Tasks::DatabaseTasks.drop_current ENV['DB']
-ActiveRecord::Tasks::DatabaseTasks.drop_current "#{ENV['DB']}_2"
-ActiveRecord::Tasks::DatabaseTasks.create_current ENV['DB']
-ActiveRecord::Tasks::DatabaseTasks.create_current "#{ENV['DB']}_2"
+ActiveRecord::Tasks::DatabaseTasks.drop_current 'test'
+ActiveRecord::Tasks::DatabaseTasks.drop_current 'test2'
+ActiveRecord::Tasks::DatabaseTasks.create_current 'test'
+ActiveRecord::Tasks::DatabaseTasks.create_current 'test2'
 
 # models
 class Foo < ActiveRecord::Base; end
 class Bar < ActiveRecord::Base; end
 class Baz < ActiveRecord::Base; end
 class Quu < ActiveRecord::Base
-  establish_connection "#{ENV['DB']}_2".to_sym
+  establish_connection :test2
 end
 
 # migrations
 class CreateAllTables < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[5.0] : ActiveRecord::Migration
   def self.up
-    ActiveRecord::Base.establish_connection ENV['DB'].to_sym
+    ActiveRecord::Base.establish_connection :test
     create_table(:bars) {|t| t.string :name }
     create_table(:foos) {|t| t.string :name; t.references :bar, foreign_key: true }
     create_table(:bazs) {|t| t.string :name }
 
-    test2_connection = ActiveRecord::Base.establish_connection("#{ENV['DB']}_2".to_sym).connection
+    test2_connection = ActiveRecord::Base.establish_connection(:test2).connection
     test2_connection.create_table(:quus) {|t| t.string :name }
-    ActiveRecord::Base.establish_connection ENV['DB'].to_sym
+    ActiveRecord::Base.establish_connection :test
   end
 
   def self.down
@@ -48,8 +48,8 @@ class CreateAllTables < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migrat
     drop_table(:bars) {|t| t.string :name }
     drop_table(:bazs) {|t| t.string :name }
 
-    test2_connection = ActiveRecord::Base.establish_connection("#{ENV['DB']}_2".to_sym).connection
+    test2_connection = ActiveRecord::Base.establish_connection(:test2).connection
     test2_connection.drop_table :quus
-    ActiveRecord::Base.establish_connection ENV['DB'].to_sym
+    ActiveRecord::Base.establish_connection :test
   end
 end
