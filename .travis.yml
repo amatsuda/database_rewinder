@@ -1,5 +1,8 @@
 language: ruby
 
+addons:
+  postgresql: '9.4'
+
 before_install:
   - gem i rubygems-update -v '<3' && update_rubygems
   - "ruby -e 'exit RUBY_VERSION.to_f >= 2.6' && gem up bundler || gem i bundler -v '<2'"
