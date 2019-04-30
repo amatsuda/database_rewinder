@@ -19,6 +19,7 @@ rvm:
 
 gemfile:
   - gemfiles/rails_52.gemfile
+  - gemfiles/rails_60.gemfile
 
 sudo: false
 
