@@ -2,16 +2,13 @@ language: ruby
 
 addons:
   postgresql: '9.4'
-  apt:
-    sources:
-      - mysql-5.7-trusty
-    packages:
-      - mysql-server
-      - mysql-client
+  mysql: '5.7'
 
 before_install:
   - gem i rubygems-update -v '<3' && update_rubygems
   - "ruby -e 'exit RUBY_VERSION.to_f >= 2.6' && gem up bundler || gem i bundler -v '<2'"
+  - sudo service mysql restart
+
 
 cache: bundler
 
@@ -28,6 +25,8 @@ gemfile:
   - gemfiles/rails_60.gemfile
 
 sudo: false
+
+dist: xenial
 
 matrix:
   include:
