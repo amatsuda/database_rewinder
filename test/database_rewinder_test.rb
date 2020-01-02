@@ -87,6 +87,13 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
         Bar.create name: 'bar1'
         assert_equal ['bars'], @cleaner.inserted_tables
       end
+
+      if ActiveRecord::VERSION::STRING >= '6'
+        test 'insert_all' do
+          Bar.insert_all [{name: 'bar1'}]
+          assert_equal ['bars'], @cleaner.inserted_tables
+        end
+      end
     end
 
     sub_test_case 'common database' do
@@ -106,6 +113,10 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
         perform_insert <<-SQL
           INSERT INTO "foos" ("name") VALUES (?)
         SQL
+        assert_equal ['foos'], @cleaner.inserted_tables
+      end
+      test 'without spaces between table name and columns list' do
+        perform_insert 'INSERT INTO foos(name) VALUES (?)'
         assert_equal ['foos'], @cleaner.inserted_tables
       end
 

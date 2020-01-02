@@ -48,7 +48,7 @@ module DatabaseRewinder
       end or return
 
       sql.split(';').each do |statement|
-        match = statement.match(/\A\s*INSERT(?:\s+IGNORE)?(?:\s+INTO)?\s+(?:\.*[`"]?([^.\s`"]+)[`"]?)*/i)
+        match = statement.match(/\A\s*INSERT(?:\s+IGNORE)?(?:\s+INTO)?\s+(?:\.*[`"]?([^.\s`"(]+)[`"]?)*/i)
         next unless match
 
         table = match[1]
