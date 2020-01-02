@@ -78,7 +78,6 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
 
     sub_test_case 'via General Active Record insertions' do
       setup do
-        DatabaseRewinder.init
         DatabaseRewinder.cleaners
         @cleaner = DatabaseRewinder.instance_variable_get(:'@cleaners').detect {|c| c.db == (ENV['DB'] == 'sqlite3' ? 'db/database_rewinder_test.sqlite3' : 'database_rewinder_test')}
       end
