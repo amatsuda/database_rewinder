@@ -76,6 +76,19 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
       DatabaseRewinder.database_configuration = nil
     end
 
+    sub_test_case 'via General Active Record insertions' do
+      setup do
+        DatabaseRewinder.init
+        DatabaseRewinder.cleaners
+        @cleaner = DatabaseRewinder.instance_variable_get(:'@cleaners').detect {|c| c.db == (ENV['DB'] == 'sqlite3' ? 'db/database_rewinder_test.sqlite3' : 'database_rewinder_test')}
+      end
+
+      test 'create' do
+        Bar.create name: 'bar1'
+        assert_equal ['bars'], @cleaner.inserted_tables
+      end
+    end
+
     sub_test_case 'common database' do
       test 'include database name' do
         perform_insert 'INSERT INTO "database"."foos" ("name") VALUES (?)'
