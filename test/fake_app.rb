@@ -34,7 +34,7 @@ end
 class CreateAllTables < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[5.0] : ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.establish_connection :test
-    create_table(:bars) {|t| t.string :name }
+    create_table(:bars) {|t| t.string :name; t.index :name, unique: true }
     create_table(:foos) {|t| t.string :name; t.references :bar, foreign_key: true }
     create_table(:bazs) {|t| t.string :name }
 
