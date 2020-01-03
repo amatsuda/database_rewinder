@@ -89,7 +89,7 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
 
       if ActiveRecord::VERSION::STRING >= '6'
         test 'insert_all' do
-          Bar.insert_all [{id: 1, name: 'bar1'}]
+          Bar.insert_all [{name: 'bar1'}]
           assert_equal ['bars'], @cleaner.inserted_tables
         end
       end
