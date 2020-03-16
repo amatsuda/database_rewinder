@@ -83,7 +83,7 @@ module DatabaseRewinder
     end
 
     def get_config_from(connection_name)
-      if Gem::Version.new(Rails.version) >= Gem::Version.new("6.1.0.alpha")
+      if Gem::Version.new(Rails.version) >= Gem::Version.new("6.0.0")
         database_configuration.configs_for(env_name: connection_name).first.configuration_hash
       else
         database_configuration["connection_name"]
@@ -92,7 +92,7 @@ module DatabaseRewinder
 
     def get_cache_key(connection_pool)
       if connection_pool.respond_to?(:db_config) # ActiveRecord >= 6.1
-        if Gem::Version.new(Rails.version) >= Gem::Version.new("6.1.0.alpha")
+        if Gem::Version.new(Rails.version) >= Gem::Version.new("6.0.0")
           connection_pool.db_config.configuration_hash
         else
           connection_pool.db_config.config
