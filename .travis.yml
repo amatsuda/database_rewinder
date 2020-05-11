@@ -30,6 +30,9 @@ dist: xenial
 
 matrix:
   include:
+    - rvm: 2.7.1
+      gemfile: gemfiles/rails_60.gemfile
+      env: DB=postgresql
     - rvm: 2.6.3
       gemfile: gemfiles/rails_edge.gemfile
       env: DB=postgresql
