@@ -183,7 +183,7 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
       @except = @cleaner.instance_variable_get(:@except)
       Foo.create! name: 'foo1'
       Bar.create! name: 'bar1'
-      DatabaseRewinder.clean_with :truncation, options
+      DatabaseRewinder.clean_with :truncation, **options
     end
 
     test 'with only option' do
