@@ -36,7 +36,7 @@ module DatabaseRewinder
     #    DatabaseRewinder[:active_record, connection: 'the_db_name']
     #
     # You can cleanup multiple databases for each test using this configuration.
-    def [](orm, connection: nil, **)
+    def [](orm = nil, connection: nil, **)
       if connection.nil?
         if orm.is_a? String
           connection = orm
