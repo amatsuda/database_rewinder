@@ -5,16 +5,15 @@ addons:
   mysql: '5.7'
 
 before_install:
-  - gem i rubygems-update -v "<$RUBYGEMS_LESS_THAN" && update_rubygems
-  - "ruby -e 'exit RUBY_VERSION.to_f >= 2.6' && gem up bundler || gem i bundler -v '<2'"
+  # install older versions of rubygems and bundler only on Ruby < 2.7
+  - if [ `echo "${TRAVIS_RUBY_VERSION:0:3} < 2.7" | bc` == 1 ]; then gem i rubygems-update -v '<3' && update_rubygems; fi;
+  - if [ `echo "${TRAVIS_RUBY_VERSION:0:3} < 2.7" | bc` == 1 ]; then gem i bundler -v '<2'; fi;
   - sudo service mysql restart
 
 
 cache: bundler
 
 env:
-  global:
-    - RUBYGEMS_LESS_THAN=3
   matrix:
     - DB=sqlite3
     - DB=mysql
@@ -35,7 +34,7 @@ matrix:
   include:
     - rvm: 2.7.1
       gemfile: gemfiles/rails_60.gemfile
-      env: DB=postgresql RUBYGEMS_LESS_THAN=4
+      env: DB=postgresql
     - rvm: 2.6.3
       gemfile: gemfiles/rails_edge.gemfile
       env: DB=postgresql
