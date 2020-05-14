@@ -7,7 +7,7 @@ module DatabaseRewinder
       super
     end
 
-    if Rails::VERSION::MAJOR < 5
+    if ActiveRecord::VERSION::MAJOR < 5
       def exec_query(sql, *)
         DatabaseRewinder.record_inserted_table self, sql
         super
