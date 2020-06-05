@@ -20,7 +20,7 @@ env:
     - DB=postgresql
 
 rvm:
-  - 2.6.3
+  - 2.7.1
 
 gemfile:
   - gemfiles/rails_52.gemfile
@@ -37,6 +37,12 @@ matrix:
       env: DB=postgresql
     - rvm: 2.6.3
       gemfile: gemfiles/rails_edge.gemfile
+      env: DB=postgresql
+    - rvm: 2.6.3
+      gemfile: gemfiles/rails_60.gemfile
+      env: DB=postgresql
+    - rvm: 2.6.3
+      gemfile: gemfiles/rails_52.gemfile
       env: DB=postgresql
     - rvm: 2.5.5
       gemfile: gemfiles/rails_51.gemfile
