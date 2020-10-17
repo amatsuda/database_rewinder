@@ -16,9 +16,20 @@ module DatabaseRewinder
     end
 
     def create_cleaner(connection_name)
-      config = database_configuration[connection_name] or raise %Q[Database configuration named "#{connection_name}" is not configured.]
+      config = get_connection(connection_name) or raise %Q[Database configuration named "#{connection_name}" is not configured.]
 
       Cleaner.new(config: config, connection_name: connection_name, only: @only, except: @except).tap {|c| @cleaners << c}
+    end
+
+    def get_connection(connection_name)
+      return database_configuration[connection_name] unless database_configuration.respond_to?(:configs_for)
+
+      config_hash = database_configuration.configs_for(env_name: connection_name).first
+      if config_hash.respond_to?(:configuration_hash)
+        config_hash.configuration_hash
+      else
+        database_configuration[connection_name]
+      end
     end
 
     def [](connection)
@@ -91,6 +102,7 @@ module DatabaseRewinder
     end
   end
 
+  private_class_method :get_connection
   private_class_method :get_cache_key
 end
 
