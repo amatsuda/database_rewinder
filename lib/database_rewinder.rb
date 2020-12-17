@@ -86,7 +86,7 @@ module DatabaseRewinder
       if Gem::Version.new(Rails.version) >= Gem::Version.new("6.0.0")
         database_configuration.configs_for(env_name: connection_name).first.configuration_hash
       else
-        database_configuration["connection_name"]
+        database_configuration[connection_name]
       end
     end
 
