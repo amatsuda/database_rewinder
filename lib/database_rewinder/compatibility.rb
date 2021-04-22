@@ -2,8 +2,8 @@
 
 module DatabaseRewinder
   module Compatibility
-    def clean_with(*args)
-      cleaners.each {|c| c.clean_with(*args)}
+    def clean_with(*args, **opts)
+      cleaners.each {|c| c.clean_with(*args, **opts)}
     end
 
     def cleaning
@@ -36,7 +36,7 @@ module DatabaseRewinder
     #    DatabaseRewinder[:active_record, connection: 'the_db_name']
     #
     # You can cleanup multiple databases for each test using this configuration.
-    def [](orm, connection: nil, **)
+    def [](orm = nil, connection: nil, **)
       if connection.nil?
         if orm.is_a? String
           connection = orm

@@ -49,7 +49,7 @@ module DatabaseRewinder
       end or return
 
       sql.split(';').each do |statement|
-        match = statement.match(/\A\s*INSERT(?:\s+IGNORE)?(?:\s+INTO)?\s+(?:\.*[`"]?([^.\s`"]+)[`"]?)*/i)
+        match = statement.match(/\A\s*INSERT(?:\s+IGNORE)?(?:\s+INTO)?\s+(?:\.*[`"]?([^.\s`"(]+)[`"]?)*/i)
         next unless match
 
         table = match[1]
@@ -83,6 +83,8 @@ module DatabaseRewinder
       end
     end
   end
+
+  private_class_method :get_cache_key
 end
 
 begin

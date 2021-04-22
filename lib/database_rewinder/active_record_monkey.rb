@@ -7,9 +7,16 @@ module DatabaseRewinder
       super
     end
 
-    def exec_query(sql, *)
-      DatabaseRewinder.record_inserted_table self, sql
-      super
+    if ActiveRecord::VERSION::MAJOR < 5
+      def exec_query(sql, *)
+        DatabaseRewinder.record_inserted_table self, sql
+        super
+      end
+    else
+      def exec_query(sql, *, **)
+        DatabaseRewinder.record_inserted_table self, sql
+        super
+      end
     end
   end
 end

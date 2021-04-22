@@ -76,6 +76,25 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
       DatabaseRewinder.database_configuration = nil
     end
 
+    sub_test_case 'via General Active Record insertions' do
+      setup do
+        DatabaseRewinder.cleaners
+        @cleaner = DatabaseRewinder.instance_variable_get(:'@cleaners').detect {|c| c.db == (ENV['DB'] == 'sqlite3' ? 'db/database_rewinder_test.sqlite3' : 'database_rewinder_test')}
+      end
+
+      test 'create' do
+        Bar.create name: 'bar1'
+        assert_equal ['bars'], @cleaner.inserted_tables
+      end
+
+      if ActiveRecord::VERSION::STRING >= '6'
+        test 'insert_all' do
+          Bar.insert_all! [{name: 'bar1'}]
+          assert_equal ['bars'], @cleaner.inserted_tables
+        end
+      end
+    end
+
     sub_test_case 'common database' do
       test 'include database name' do
         perform_insert 'INSERT INTO "database"."foos" ("name") VALUES (?)'
@@ -93,6 +112,10 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
         perform_insert <<-SQL
           INSERT INTO "foos" ("name") VALUES (?)
         SQL
+        assert_equal ['foos'], @cleaner.inserted_tables
+      end
+      test 'without spaces between table name and columns list' do
+        perform_insert 'INSERT INTO foos(name) VALUES (?)'
         assert_equal ['foos'], @cleaner.inserted_tables
       end
 
@@ -160,7 +183,7 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
       @except = @cleaner.instance_variable_get(:@except)
       Foo.create! name: 'foo1'
       Bar.create! name: 'bar1'
-      DatabaseRewinder.clean_with :truncation, options
+      DatabaseRewinder.clean_with :truncation, **options
     end
 
     test 'with only option' do
