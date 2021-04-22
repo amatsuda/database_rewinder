@@ -74,12 +74,20 @@ module DatabaseRewinder
 
     # cache AR connection.tables
     def all_table_names(connection)
-      cache_key = connection.pool.respond_to?(:spec) ? connection.pool.spec.config : connection.pool.db_config
+      cache_key = get_cache_key(connection.pool)
       #NOTE connection.tables warns on AR 5 with some adapters
       tables = ActiveSupport::Deprecation.silence { connection.tables }
       @table_names_cache[cache_key] ||= tables.reject do |t|
         (t == ActiveRecord::SchemaMigration.table_name) ||
         (ActiveRecord::Base.respond_to?(:internal_metadata_table_name) && (t == ActiveRecord::Base.internal_metadata_table_name))
+      end
+    end
+
+    def get_cache_key(connection_pool)
+      if connection_pool.respond_to?(:db_config) # ActiveRecord >= 6.1
+        connection_pool.db_config.config
+      else
+        connection_pool.spec.config
       end
     end
   end
