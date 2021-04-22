@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency "rake"
   spec.add_development_dependency 'test-unit-rails'
-  spec.add_development_dependency 'rails', '~> 6.0', '<= 6.0.3.6' # , '~> 6.1'
+  spec.add_development_dependency 'rails'
   spec.add_development_dependency 'sqlite3'
   spec.add_development_dependency 'mysql2'
   spec.add_development_dependency 'pg'
