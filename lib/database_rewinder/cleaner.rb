@@ -14,7 +14,7 @@ module DatabaseRewinder
     end
 
     def db
-      config['database']
+      config.database
     end
 
     def clean(multiple: true)
