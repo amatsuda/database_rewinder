@@ -14,7 +14,7 @@ module DatabaseRewinder
     end
 
     def db
-      config.database
+      config.respond_to?(:database) ? config.database : config['database']
     end
 
     def clean(multiple: true)
