@@ -16,7 +16,7 @@ module DatabaseRewinder
     end
 
     def create_cleaner(connection_name)
-      config = database_configuration[connection_name] or raise %Q[Database configuration named "#{connection_name}" is not configured.]
+      config = configuration_hash_for(connection_name) or raise %Q[Database configuration named "#{connection_name}" is not configured.]
 
       Cleaner.new(config: config, connection_name: connection_name, only: @only, except: @except).tap {|c| @cleaners << c}
     end
@@ -84,14 +84,29 @@ module DatabaseRewinder
 
     def get_cache_key(connection_pool)
       if connection_pool.respond_to?(:db_config) # ActiveRecord >= 6.1
-        connection_pool.db_config.config
+        connection_pool.db_config.configuration_hash
       else
         connection_pool.spec.config
       end
     end
+
+    def configuration_hash_for(connection_name)
+      if database_configuration.respond_to?(:configs_for)
+        hash_config = database_configuration.configs_for(env_name: connection_name).first
+        if hash_config
+          if hash_config.respond_to?(:configuration_hash)
+            hash_config.configuration_hash.stringify_keys
+          else
+            hash_config.config
+          end
+        end
+      else
+        database_configuration[connection_name]
+      end
+    end
   end
 
-  private_class_method :get_cache_key
+  private_class_method :configuration_hash_for, :get_cache_key
 end
 
 begin
