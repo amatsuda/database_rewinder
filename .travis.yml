@@ -20,7 +20,7 @@ env:
     - DB=postgresql
 
 rvm:
-  - 2.7.1
+  - 2.7.3
 
 gemfile:
   - gemfiles/rails_52.gemfile
@@ -33,22 +33,22 @@ dist: xenial
 
 matrix:
   include:
-    - rvm: 2.7.1
+    - rvm: 2.7.3
       gemfile: gemfiles/rails_60.gemfile
       env: DB=postgresql
-    - rvm: 2.6.3
+    - rvm: 2.6.7
       gemfile: gemfiles/rails_edge.gemfile
       env: DB=postgresql
-    - rvm: 2.6.3
+    - rvm: 2.6.7
       gemfile: gemfiles/rails_60.gemfile
       env: DB=postgresql
-    - rvm: 2.6.3
+    - rvm: 2.6.7
       gemfile: gemfiles/rails_52.gemfile
       env: DB=postgresql
-    - rvm: 2.5.5
+    - rvm: 2.5.9
       gemfile: gemfiles/rails_51.gemfile
       env: DB=postgresql
-    - rvm: 2.4.6
+    - rvm: 2.4.10
       gemfile: gemfiles/rails_50.gemfile
       env: DB=postgresql
     - rvm: 2.3.8
