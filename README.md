@@ -23,9 +23,9 @@ This strategy was originally devised and implemented by Shingo Morita (@eudoxa) 
 
 ## Supported versions
 
-* ActiveRecord 4.0, 4.1, 4.2, 5.0, 5.1, 5.2, 6.0 (edge)
+* ActiveRecord 4.0, 4.1, 4.2, 5.0, 5.1, 5.2, 6.0, 6.1, 7.0 (edge)
 
-* Ruby 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6 (trunk)
+* Ruby 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 3.0, 3.1 (trunk)
 
 ## Installation
 
