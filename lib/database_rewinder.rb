@@ -92,7 +92,7 @@ module DatabaseRewinder
 
     def configuration_hash_for(connection_name)
       if database_configuration.respond_to?(:configs_for)
-        hash_config = database_configuration.configs_for(env_name: connection_name).first
+        hash_config = database_configuration_for(connection_name)
         if hash_config
           if hash_config.respond_to?(:configuration_hash)
             hash_config.configuration_hash.stringify_keys
@@ -102,6 +102,22 @@ module DatabaseRewinder
         end
       else
         database_configuration[connection_name]
+      end
+    end
+
+    def database_configuration_for(connection_name)
+      traditional_configuration_for(connection_name) || multiple_database_configuration_for(connection_name)
+    end
+
+    def traditional_configuration_for(connection_name)
+      database_configuration.configs_for(env_name: connection_name).first
+    end
+
+    def multiple_database_configuration_for(connection_name)
+      if ActiveRecord::VERSION::STRING >= '6.1'
+        database_configuration.configs_for(name: connection_name)
+      else
+        database_configuration.configs_for(spec_name: connection_name)
       end
     end
   end
