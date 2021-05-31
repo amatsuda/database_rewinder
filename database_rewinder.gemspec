@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.version       = '0.9.5'
   spec.authors       = ["Akira Matsuda"]
   spec.email         = ["ronnie@dio.jp"]
-  spec.description   = "A minimalist's tiny and ultra-fast database cleaner"
+  spec.description   = "A minimalist's tiny and ultra-fast database cleaner for Active Record"
   spec.summary       = "A minimalist's tiny and ultra-fast database cleaner"
   spec.homepage      = 'https://github.com/amatsuda/database_rewinder'
   spec.license       = "MIT"
