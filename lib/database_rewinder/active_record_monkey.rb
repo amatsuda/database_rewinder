@@ -7,15 +7,27 @@ module DatabaseRewinder
       super
     end
 
-    if ActiveRecord::VERSION::MAJOR < 5
-      def exec_query(sql, *)
-        DatabaseRewinder.record_inserted_table self, sql
-        super
+    module ExecQuery
+      module NoKwargs
+        def exec_query(sql, *)
+          DatabaseRewinder.record_inserted_table self, sql
+          super
+        end
       end
-    else
-      def exec_query(sql, *, **)
-        DatabaseRewinder.record_inserted_table self, sql
-        super
+
+      module WithKwargs
+        def exec_query(sql, *, **)
+          DatabaseRewinder.record_inserted_table self, sql
+          super
+        end
+      end
+    end
+
+    def self.prepended(mod)
+      if ActiveRecord::VERSION::MAJOR < 5
+        mod.prepend ExecQuery::NoKwargs
+      else
+        mod.prepend ExecQuery::WithKwargs
       end
     end
   end
