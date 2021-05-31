@@ -3,15 +3,15 @@
 module DatabaseRewinder
   module InsertRecorder
     module Execute
-      module WithKwargs
-        def execute(sql, *, **)
+      module NoKwargs
+        def execute(sql, *)
           DatabaseRewinder.record_inserted_table self, sql
           super
         end
       end
 
-      module NoKwargs
-        def execute(sql, *)
+      module WithKwargs
+        def execute(sql, *, **)
           DatabaseRewinder.record_inserted_table self, sql
           super
         end
