@@ -3,7 +3,7 @@
 require 'test_helper'
 
 class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
-  if ActiveRecord::VERSION::STRING >= '5'
+  if ActiveRecord::VERSION::MAJOR >= 5
     self.use_transactional_tests = false
   else
     self.use_transactional_fixtures = false
@@ -45,7 +45,7 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
         end
       end
 
-      if ActiveRecord::VERSION::STRING >= '6'
+      if ActiveRecord::VERSION::MAJOR >= 6
         sub_test_case 'with traditional configurations' do
           test 'simply giving a connection name only' do
             assert_cleaners_added ['aaa'] do
@@ -135,7 +135,7 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
         assert_equal ['bars'], @cleaner.inserted_tables
       end
 
-      if ActiveRecord::VERSION::STRING >= '6'
+      if ActiveRecord::VERSION::MAJOR >= 6
         test 'insert_all' do
           Bar.insert_all! [{name: 'bar1'}]
           assert_equal ['bars'], @cleaner.inserted_tables
@@ -207,7 +207,7 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
     assert_equal 0, Bar.count
   end
 
-  if ActiveRecord::VERSION::STRING >= '4'
+  if ActiveRecord::VERSION::MAJOR >= 4
     sub_test_case 'migrations' do
       test '.clean_all should not touch AR::SchemaMigration' do
         begin

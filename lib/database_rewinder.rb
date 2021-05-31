@@ -114,7 +114,7 @@ module DatabaseRewinder
     end
 
     def multiple_database_configuration_for(connection_name)
-      if ActiveRecord::VERSION::STRING >= '6.1'
+      if (ActiveRecord::VERSION::MAJOR >= 6) && (ActiveRecord::VERSION::MINOR >= 1)
         database_configuration.configs_for(name: connection_name)
       else
         database_configuration.configs_for(spec_name: connection_name)
