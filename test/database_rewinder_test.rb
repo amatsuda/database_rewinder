@@ -44,6 +44,54 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
           DatabaseRewinder[:aho, connection: 'ccc']
         end
       end
+
+      if ActiveRecord::VERSION::STRING >= '6'
+        sub_test_case 'with traditional configurations' do
+          test 'simply giving a connection name only' do
+            assert_cleaners_added ['aaa'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'aaa' => {'adapter' => 'sqlite3', 'database' => ':memory:'}})
+              DatabaseRewinder['aaa']
+            end
+          end
+
+          test 'giving a connection name via Hash with :connection key' do
+            assert_cleaners_added ['bbb'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'bbb' => {'adapter' => 'sqlite3', 'database' => ':memory:'}})
+              DatabaseRewinder[connection: 'bbb']
+            end
+          end
+
+          test 'the Cleaner compatible syntax' do
+            assert_cleaners_added ['ccc'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'ccc' => {'adapter' => 'sqlite3', 'database' => ':memory:'}})
+              DatabaseRewinder[:aho, connection: 'ccc']
+            end
+          end
+        end
+
+        sub_test_case 'with multiple database configurations' do
+          test 'simply giving a connection name only' do
+            assert_cleaners_added ['aaa'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'test' => {'aaa' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}})
+              DatabaseRewinder['aaa']
+            end
+          end
+
+          test 'giving a connection name via Hash with :connection key' do
+            assert_cleaners_added ['bbb'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'test' => {'bbb' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}})
+              DatabaseRewinder[connection: 'bbb']
+            end
+          end
+
+          test 'the Cleaner compatible syntax' do
+            assert_cleaners_added ['ccc'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'test' => {'ccc' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}})
+              DatabaseRewinder[:aho, connection: 'ccc']
+            end
+          end
+        end
+      end
     end
 
     test 'for connecting to multiple databases' do
