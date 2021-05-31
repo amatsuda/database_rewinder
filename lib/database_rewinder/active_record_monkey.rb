@@ -53,9 +53,11 @@ module DatabaseRewinder
   end
 end
 
-::ActiveRecord::ConnectionAdapters::SQLite3Adapter.send :prepend, DatabaseRewinder::InsertRecorder if defined? ::ActiveRecord::ConnectionAdapters::SQLite3Adapter
-::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.send :prepend, DatabaseRewinder::InsertRecorder if defined? ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter
-::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter.send :prepend, DatabaseRewinder::InsertRecorder if defined? ::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter
+
+# Already loaded adapters (SQLite3Adapter, PostgreSQLAdapter, AbstractMysqlAdapter, and possibly another third party adapter)
+::ActiveRecord::ConnectionAdapters::AbstractAdapter.descendants.each do |adapter|
+  adapter.send :prepend, DatabaseRewinder::InsertRecorder unless adapter < DatabaseRewinder::InsertRecorder
+end
 
 def (::ActiveRecord::ConnectionAdapters::AbstractAdapter).inherited(adapter)
   adapter.send :prepend, DatabaseRewinder::InsertRecorder
