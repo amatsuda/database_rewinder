@@ -2,9 +2,20 @@
 
 module DatabaseRewinder
   module InsertRecorder
-    def execute(sql, *)
-      DatabaseRewinder.record_inserted_table self, sql
-      super
+    module Execute
+      module WithKwargs
+        def execute(sql, *, **)
+          DatabaseRewinder.record_inserted_table self, sql
+          super
+        end
+      end
+
+      module NoKwargs
+        def execute(sql, *)
+          DatabaseRewinder.record_inserted_table self, sql
+          super
+        end
+      end
     end
 
     module ExecQuery
@@ -24,6 +35,13 @@ module DatabaseRewinder
     end
 
     def self.prepended(mod)
+      if meth = mod.instance_method(:execute)
+        if meth.parameters.any? {|type, _name| [:key, :keyreq, :keyrest].include? type }
+          mod.prepend Execute::WithKwargs
+        else
+          mod.prepend Execute::NoKwargs
+        end
+      end
       if meth = mod.instance_method(:exec_query)
         if meth.parameters.any? {|type, _name| [:key, :keyreq, :keyrest].include? type }
           mod.prepend ExecQuery::WithKwargs
