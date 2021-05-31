@@ -37,16 +37,16 @@ module DatabaseRewinder
     def self.prepended(mod)
       if meth = mod.instance_method(:execute)
         if meth.parameters.any? {|type, _name| [:key, :keyreq, :keyrest].include? type }
-          mod.prepend Execute::WithKwargs
+          mod.send :prepend, Execute::WithKwargs
         else
-          mod.prepend Execute::NoKwargs
+          mod.send :prepend, Execute::NoKwargs
         end
       end
       if meth = mod.instance_method(:exec_query)
         if meth.parameters.any? {|type, _name| [:key, :keyreq, :keyrest].include? type }
-          mod.prepend ExecQuery::WithKwargs
+          mod.send :prepend, ExecQuery::WithKwargs
         else
-          mod.prepend ExecQuery::NoKwargs
+          mod.send :prepend, ExecQuery::NoKwargs
         end
       end
     end
@@ -58,5 +58,5 @@ end
 ::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter.send :prepend, DatabaseRewinder::InsertRecorder if defined? ::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter
 
 def (::ActiveRecord::ConnectionAdapters::AbstractAdapter).inherited(adapter)
-  adapter.prepend DatabaseRewinder::InsertRecorder
+  adapter.send :prepend, DatabaseRewinder::InsertRecorder
 end
