@@ -86,4 +86,5 @@ matrix:
       env: DB=postgresql
 
   allow_failures:
+    - rvm: ruby-head
     - gemfile: gemfiles/rails_edge.gemfile
