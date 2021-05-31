@@ -24,10 +24,12 @@ module DatabaseRewinder
     end
 
     def self.prepended(mod)
-      if ActiveRecord::VERSION::MAJOR < 5
-        mod.prepend ExecQuery::NoKwargs
-      else
-        mod.prepend ExecQuery::WithKwargs
+      if meth = mod.instance_method(:exec_query)
+        if meth.parameters.any? {|type, _name| [:key, :keyreq, :keyrest].include? type }
+          mod.prepend ExecQuery::WithKwargs
+        else
+          mod.prepend ExecQuery::NoKwargs
+        end
       end
     end
   end
