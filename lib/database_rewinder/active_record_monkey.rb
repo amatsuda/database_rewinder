@@ -34,6 +34,7 @@ module DatabaseRewinder
       end
     end
 
+    # This method actually no longer has to be a `prepended` hook because InsertRecorder is a module without a direct method now, but still doing this just for compatibility
     def self.prepended(mod)
       if meth = mod.instance_method(:execute)
         if meth.parameters.any? {|type, _name| [:key, :keyreq, :keyrest].include? type }
@@ -56,9 +57,11 @@ end
 
 # Already loaded adapters (SQLite3Adapter, PostgreSQLAdapter, AbstractMysqlAdapter, and possibly another third party adapter)
 ::ActiveRecord::ConnectionAdapters::AbstractAdapter.descendants.each do |adapter|
+  # Note: this would only prepend on AbstractMysqlAdapter and not on Mysql2Adapter because ```Mysql2Adapter < InsertRecorder``` becomes true immediately after AbstractMysqlAdapter prepends InsertRecorder
   adapter.send :prepend, DatabaseRewinder::InsertRecorder unless adapter < DatabaseRewinder::InsertRecorder
 end
 
+# Third party adapters that might be loaded in the future
 def (::ActiveRecord::ConnectionAdapters::AbstractAdapter).inherited(adapter)
   adapter.send :prepend, DatabaseRewinder::InsertRecorder
 end
