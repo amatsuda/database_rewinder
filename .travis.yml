@@ -6,8 +6,8 @@ addons:
 
 before_install:
   # install older versions of rubygems and bundler only on Ruby < 2.7
-  - if [ `echo "${TRAVIS_RUBY_VERSION:0:3} < 2.7" | bc` == 1 ]; then gem i rubygems-update -v '<3' && update_rubygems; fi;
-  - if [ `echo "${TRAVIS_RUBY_VERSION:0:3} < 2.7" | bc` == 1 ]; then gem i bundler -v '<2'; fi;
+  - if [ "${TRAVIS_RUBY_VERSION}" != "ruby-head" ] && [ `echo "${TRAVIS_RUBY_VERSION:0:3} < 2.7" | bc` == 1 ]; then gem i rubygems-update -v '<3' && update_rubygems; fi;
+  - if [ "${TRAVIS_RUBY_VERSION}" != "ruby-head" ] && [ `echo "${TRAVIS_RUBY_VERSION:0:3} < 2.7" | bc` == 1 ]; then gem i bundler -v '<2'; fi;
   - sudo service mysql restart
 
 
