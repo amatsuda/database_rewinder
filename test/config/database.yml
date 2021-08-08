@@ -31,6 +31,7 @@ test2:
 test:
   adapter: postgresql
   host: localhost
+  # this user has to be a superuser for the tests to pass
   username: postgres
   password:
   database: database_rewinder_test
