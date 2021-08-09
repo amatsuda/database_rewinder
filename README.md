@@ -1,6 +1,6 @@
 # DatabaseRewinder
 
-[![Build Status](https://travis-ci.org/amatsuda/database_rewinder.svg)](http://travis-ci.org/amatsuda/database\_rewinder)
+[![Build Status](https://github.com/amatsuda/database_rewinder/actions/workflows/main.yml/badge.svg)](https://github.com/amatsuda/database_rewinder/actions)
 
 database\_rewinder is a minimalist's tiny and ultra-fast database cleaner.
 
