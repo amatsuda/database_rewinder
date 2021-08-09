@@ -1,0 +1,165 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        ports:
+          - 3306:3306
+        options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 10
+
+    strategy:
+      matrix:
+        db:
+          - sqlite3
+          - postgresql
+          - mysql
+
+        ruby_version: [ruby-head, '3.0', '2.7', '2.6', '2.5', '2.4']
+
+        gemfile:
+          - gemfiles/rails_edge.gemfile
+          - gemfiles/rails_61.gemfile
+          - gemfiles/rails_60.gemfile
+          - gemfiles/rails_52.gemfile
+          - gemfiles/rails_51.gemfile
+          - gemfiles/rails_50.gemfile
+          - gemfiles/rails_42.gemfile
+
+        exclude:
+          - gemfile: gemfiles/rails_edge.gemfile
+            ruby_version: '2.6'
+          - gemfile: gemfiles/rails_edge.gemfile
+            ruby_version: '2.5'
+          - gemfile: gemfiles/rails_edge.gemfile
+            ruby_version: '2.4'
+
+          - gemfile: gemfiles/rails_61.gemfile
+            ruby_version: '2.5'
+          - gemfile: gemfiles/rails_61.gemfile
+            ruby_version: '2.4'
+
+          - gemfile: gemfiles/rails_60.gemfile
+            ruby_version: ruby-head
+          - gemfile: gemfiles/rails_60.gemfile
+            ruby_version: '3.0'
+          - gemfile: gemfiles/rails_60.gemfile
+            ruby_version: '2.5'
+          - gemfile: gemfiles/rails_60.gemfile
+            ruby_version: '2.4'
+
+          - gemfile: gemfiles/rails_52.gemfile
+            ruby_version: ruby-head
+          - gemfile: gemfiles/rails_52.gemfile
+            ruby_version: '3.0'
+          - gemfile: gemfiles/rails_52.gemfile
+            ruby_version: '2.5'
+
+          - gemfile: gemfiles/rails_51.gemfile
+            ruby_version: ruby-head
+          - gemfile: gemfiles/rails_51.gemfile
+            ruby_version: '3.0'
+          - gemfile: gemfiles/rails_51.gemfile
+            ruby_version: '2.7'
+          - gemfile: gemfiles/rails_51.gemfile
+            ruby_version: '2.5'
+          - gemfile: gemfiles/rails_51.gemfile
+            ruby_version: '2.4'
+
+          - gemfile: gemfiles/rails_50.gemfile
+            ruby_version: ruby-head
+          - gemfile: gemfiles/rails_50.gemfile
+            ruby_version: '3.0'
+          - gemfile: gemfiles/rails_50.gemfile
+            ruby_version: '2.7'
+          - gemfile: gemfiles/rails_50.gemfile
+            ruby_version: '2.6'
+          - gemfile: gemfiles/rails_50.gemfile
+            ruby_version: '2.4'
+
+          - gemfile: gemfiles/rails_42.gemfile
+            ruby_version: ruby-head
+          - gemfile: gemfiles/rails_42.gemfile
+            ruby_version: '3.0'
+          - gemfile: gemfiles/rails_42.gemfile
+            ruby_version: '2.7'
+          - gemfile: gemfiles/rails_42.gemfile
+            ruby_version: '2.6'
+          - gemfile: gemfiles/rails_42.gemfile
+            ruby_version: '2.5'
+
+        include:
+          - ruby_version: '2.3'
+            gemfile: gemfiles/rails_52.gemfile
+            db: sqlite3
+          - ruby_version: '2.3'
+            gemfile: gemfiles/rails_52.gemfile
+            db: postgresql
+          - ruby_version: '2.3'
+            gemfile: gemfiles/rails_52.gemfile
+            db: mysql
+            allow_failures: 'true'
+          - ruby_version: '2.2'
+            gemfile: gemfiles/rails_52.gemfile
+            db: sqlite3
+          - ruby_version: '2.2'
+            gemfile: gemfiles/rails_52.gemfile
+            db: postgresql
+          - ruby_version: '2.2'
+            gemfile: gemfiles/rails_52.gemfile
+            db: mysql
+            allow_failures: 'true'
+
+          - ruby_version: '2.2'
+            gemfile: gemfiles/rails_42.gemfile
+            db: sqlite3
+          - ruby_version: '2.2'
+            gemfile: gemfiles/rails_42.gemfile
+            db: postgresql
+          - ruby_version: '2.2'
+            gemfile: gemfiles/rails_42.gemfile
+            db: mysql
+            allow_failures: 'true'
+          - ruby_version: '2.1'
+            gemfile: gemfiles/rails_42.gemfile
+            db: sqlite3
+          - ruby_version: '2.1'
+            gemfile: gemfiles/rails_42.gemfile
+            db: postgresql
+          - ruby_version: '2.1'
+            gemfile: gemfiles/rails_42.gemfile
+            db: mysql
+            allow_failures: 'true'
+
+    runs-on: ubuntu-18.04
+
+    env:
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+      DB: ${{ matrix.db }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          bundler: ${{ contains(matrix.gemfile, 'rails_4') && '1' || '2' }}
+          bundler-cache: true
+        continue-on-error: ${{ (matrix.ruby_version == 'ruby-head') || (matrix.allow_failures == 'true') }}
+
+      - run: bundle exec rake
+        continue-on-error: ${{ (matrix.ruby_version == 'ruby-head') || contains(matrix.gemfile, 'rails_edge') || (matrix.allow_failures == 'true') }}

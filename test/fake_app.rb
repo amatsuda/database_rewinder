@@ -10,10 +10,12 @@ module DatabaseRewinderTestApp
 
     config.eager_load = false
     config.active_support.deprecation = :log
+
+    rake_tasks do
+      load 'active_record/railties/databases.rake'
+    end
   end.initialize!
 end
-
-load 'active_record/railties/databases.rake'
 
 require 'active_record/base'
 ActiveRecord::Tasks::DatabaseTasks.root ||= Rails.root
