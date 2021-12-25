@@ -33,6 +33,7 @@ jobs:
 
         gemfile:
           - gemfiles/rails_edge.gemfile
+          - gemfiles/rails_70.gemfile
           - gemfiles/rails_61.gemfile
           - gemfiles/rails_60.gemfile
           - gemfiles/rails_52.gemfile
@@ -46,6 +47,13 @@ jobs:
           - gemfile: gemfiles/rails_edge.gemfile
             ruby_version: '2.5'
           - gemfile: gemfiles/rails_edge.gemfile
+            ruby_version: '2.4'
+
+          - gemfile: gemfiles/rails_70.gemfile
+            ruby_version: '2.6'
+          - gemfile: gemfiles/rails_70.gemfile
+            ruby_version: '2.5'
+          - gemfile: gemfiles/rails_70.gemfile
             ruby_version: '2.4'
 
           - gemfile: gemfiles/rails_61.gemfile
