@@ -121,37 +121,6 @@ jobs:
             gemfile: gemfiles/rails_52.gemfile
             db: mysql
             allow_failures: 'true'
-          - ruby_version: '2.2'
-            gemfile: gemfiles/rails_52.gemfile
-            db: sqlite3
-          - ruby_version: '2.2'
-            gemfile: gemfiles/rails_52.gemfile
-            db: postgresql
-          - ruby_version: '2.2'
-            gemfile: gemfiles/rails_52.gemfile
-            db: mysql
-            allow_failures: 'true'
-
-          - ruby_version: '2.2'
-            gemfile: gemfiles/rails_42.gemfile
-            db: sqlite3
-          - ruby_version: '2.2'
-            gemfile: gemfiles/rails_42.gemfile
-            db: postgresql
-          - ruby_version: '2.2'
-            gemfile: gemfiles/rails_42.gemfile
-            db: mysql
-            allow_failures: 'true'
-          - ruby_version: '2.1'
-            gemfile: gemfiles/rails_42.gemfile
-            db: sqlite3
-          - ruby_version: '2.1'
-            gemfile: gemfiles/rails_42.gemfile
-            db: postgresql
-          - ruby_version: '2.1'
-            gemfile: gemfiles/rails_42.gemfile
-            db: mysql
-            allow_failures: 'true'
 
     runs-on: ubuntu-18.04
 
