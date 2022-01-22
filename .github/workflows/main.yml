@@ -23,6 +23,8 @@ jobs:
         options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 10
 
     strategy:
+      fail-fast: false
+
       matrix:
         db:
           - sqlite3
