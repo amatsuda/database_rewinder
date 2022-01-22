@@ -39,9 +39,6 @@ jobs:
           - gemfiles/rails_61.gemfile
           - gemfiles/rails_60.gemfile
           - gemfiles/rails_52.gemfile
-          - gemfiles/rails_51.gemfile
-          - gemfiles/rails_50.gemfile
-          - gemfiles/rails_42.gemfile
 
         exclude:
           - gemfile: gemfiles/rails_edge.gemfile
@@ -79,39 +76,6 @@ jobs:
           - gemfile: gemfiles/rails_52.gemfile
             ruby_version: '2.5'
 
-          - gemfile: gemfiles/rails_51.gemfile
-            ruby_version: ruby-head
-          - gemfile: gemfiles/rails_51.gemfile
-            ruby_version: '3.0'
-          - gemfile: gemfiles/rails_51.gemfile
-            ruby_version: '2.7'
-          - gemfile: gemfiles/rails_51.gemfile
-            ruby_version: '2.5'
-          - gemfile: gemfiles/rails_51.gemfile
-            ruby_version: '2.4'
-
-          - gemfile: gemfiles/rails_50.gemfile
-            ruby_version: ruby-head
-          - gemfile: gemfiles/rails_50.gemfile
-            ruby_version: '3.0'
-          - gemfile: gemfiles/rails_50.gemfile
-            ruby_version: '2.7'
-          - gemfile: gemfiles/rails_50.gemfile
-            ruby_version: '2.6'
-          - gemfile: gemfiles/rails_50.gemfile
-            ruby_version: '2.4'
-
-          - gemfile: gemfiles/rails_42.gemfile
-            ruby_version: ruby-head
-          - gemfile: gemfiles/rails_42.gemfile
-            ruby_version: '3.0'
-          - gemfile: gemfiles/rails_42.gemfile
-            ruby_version: '2.7'
-          - gemfile: gemfiles/rails_42.gemfile
-            ruby_version: '2.6'
-          - gemfile: gemfiles/rails_42.gemfile
-            ruby_version: '2.5'
-
         include:
           - ruby_version: '2.3'
             gemfile: gemfiles/rails_52.gemfile
@@ -123,6 +87,36 @@ jobs:
             gemfile: gemfiles/rails_52.gemfile
             db: mysql
             allow_failures: 'true'
+
+          - ruby_version: '2.6'
+            gemfile: gemfiles/rails_51.gemfile
+            db: sqlite3
+          - ruby_version: '2.6'
+            gemfile: gemfiles/rails_51.gemfile
+            db: postgresql
+          - ruby_version: '2.6'
+            gemfile: gemfiles/rails_51.gemfile
+            db: mysql
+
+          - ruby_version: '2.5'
+            gemfile: gemfiles/rails_50.gemfile
+            db: sqlite3
+          - ruby_version: '2.5'
+            gemfile: gemfiles/rails_50.gemfile
+            db: postgresql
+          - ruby_version: '2.5'
+            gemfile: gemfiles/rails_50.gemfile
+            db: mysql
+
+          - ruby_version: '2.4'
+            gemfile: gemfiles/rails_42.gemfile
+            db: sqlite3
+          - ruby_version: '2.4'
+            gemfile: gemfiles/rails_42.gemfile
+            db: postgresql
+          - ruby_version: '2.4'
+            gemfile: gemfiles/rails_42.gemfile
+            db: mysql
 
     runs-on: ubuntu-18.04
 
