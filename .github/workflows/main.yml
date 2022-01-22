@@ -47,6 +47,9 @@ jobs:
           - gemfile: gemfiles/rails_70.gemfile
             ruby_version: '2.6'
 
+          - gemfile: gemfiles/rails_61.gemfile
+            ruby_version: ruby-head
+
           - gemfile: gemfiles/rails_60.gemfile
             ruby_version: ruby-head
           - gemfile: gemfiles/rails_60.gemfile
