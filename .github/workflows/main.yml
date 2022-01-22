@@ -31,7 +31,7 @@ jobs:
           - postgresql
           - mysql
 
-        ruby_version: [ruby-head, '3.0', '2.7', '2.6', '2.5', '2.4']
+        ruby_version: [ruby-head, '3.0', '2.7', '2.6']
 
         gemfile:
           - gemfiles/rails_edge.gemfile
@@ -43,40 +43,31 @@ jobs:
         exclude:
           - gemfile: gemfiles/rails_edge.gemfile
             ruby_version: '2.6'
-          - gemfile: gemfiles/rails_edge.gemfile
-            ruby_version: '2.5'
-          - gemfile: gemfiles/rails_edge.gemfile
-            ruby_version: '2.4'
 
           - gemfile: gemfiles/rails_70.gemfile
             ruby_version: '2.6'
-          - gemfile: gemfiles/rails_70.gemfile
-            ruby_version: '2.5'
-          - gemfile: gemfiles/rails_70.gemfile
-            ruby_version: '2.4'
-
-          - gemfile: gemfiles/rails_61.gemfile
-            ruby_version: '2.5'
-          - gemfile: gemfiles/rails_61.gemfile
-            ruby_version: '2.4'
 
           - gemfile: gemfiles/rails_60.gemfile
             ruby_version: ruby-head
           - gemfile: gemfiles/rails_60.gemfile
             ruby_version: '3.0'
-          - gemfile: gemfiles/rails_60.gemfile
-            ruby_version: '2.5'
-          - gemfile: gemfiles/rails_60.gemfile
-            ruby_version: '2.4'
 
           - gemfile: gemfiles/rails_52.gemfile
             ruby_version: ruby-head
           - gemfile: gemfiles/rails_52.gemfile
             ruby_version: '3.0'
-          - gemfile: gemfiles/rails_52.gemfile
-            ruby_version: '2.5'
 
         include:
+          - ruby_version: '2.4'
+            gemfile: gemfiles/rails_52.gemfile
+            db: sqlite3
+          - ruby_version: '2.4'
+            gemfile: gemfiles/rails_52.gemfile
+            db: postgresql
+          - ruby_version: '2.4'
+            gemfile: gemfiles/rails_52.gemfile
+            db: mysql
+
           - ruby_version: '2.3'
             gemfile: gemfiles/rails_52.gemfile
             db: sqlite3
