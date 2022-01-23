@@ -1,8 +1,0 @@
-source 'https://rubygems.org'
-
-gem 'rails', '~> 5.1.0'
-gem 'pg', '~> 0.21'
-gem 'capybara', '~> 2.13'
-gem 'puma'
-
-gemspec path: '../'

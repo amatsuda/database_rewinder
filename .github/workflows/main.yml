@@ -26,96 +26,85 @@ jobs:
       fail-fast: false
 
       matrix:
-        db:
-          - sqlite3
-          - postgresql
-          - mysql
-
+        db: [sqlite3, postgresql, mysql]
         ruby_version: [ruby-head, '3.0', '2.7', '2.6']
-
-        gemfile:
-          - gemfiles/rails_edge.gemfile
-          - gemfiles/rails_70.gemfile
-          - gemfiles/rails_61.gemfile
-          - gemfiles/rails_60.gemfile
-          - gemfiles/rails_52.gemfile
+        rails_version: [edge, '7.0', '6.1', '6.0', '5.2']
 
         exclude:
-          - gemfile: gemfiles/rails_edge.gemfile
-            ruby_version: '2.6'
+          - ruby_version: '2.6'
+            rails_version: edge
 
-          - gemfile: gemfiles/rails_70.gemfile
-            ruby_version: '2.6'
+          - ruby_version: '2.6'
+            rails_version: '7.0'
 
-          - gemfile: gemfiles/rails_61.gemfile
-            ruby_version: ruby-head
+          - ruby_version: ruby-head
+            rails_version: '6.1'
 
-          - gemfile: gemfiles/rails_60.gemfile
-            ruby_version: ruby-head
-          - gemfile: gemfiles/rails_60.gemfile
-            ruby_version: '3.0'
+          - ruby_version: ruby-head
+            rails_version: '6.0'
+          - ruby_version: '3.0'
+            rails_version: '6.0'
 
-          - gemfile: gemfiles/rails_52.gemfile
-            ruby_version: ruby-head
-          - gemfile: gemfiles/rails_52.gemfile
-            ruby_version: '3.0'
+          - ruby_version: ruby-head
+            rails_version: '5.2'
+          - ruby_version: '3.0'
+            rails_version: '5.2'
 
         include:
           - ruby_version: '2.4'
-            gemfile: gemfiles/rails_52.gemfile
+            rails_version: '5.2'
             db: sqlite3
           - ruby_version: '2.4'
-            gemfile: gemfiles/rails_52.gemfile
+            rails_version: '5.2'
             db: postgresql
           - ruby_version: '2.4'
-            gemfile: gemfiles/rails_52.gemfile
+            rails_version: '5.2'
             db: mysql
 
           - ruby_version: '2.3'
-            gemfile: gemfiles/rails_52.gemfile
+            rails_version: '5.2'
             db: sqlite3
           - ruby_version: '2.3'
-            gemfile: gemfiles/rails_52.gemfile
+            rails_version: '5.2'
             db: postgresql
           - ruby_version: '2.3'
-            gemfile: gemfiles/rails_52.gemfile
+            rails_version: '5.2'
             db: mysql
-            allow_failures: 'true'
 
           - ruby_version: '2.6'
-            gemfile: gemfiles/rails_51.gemfile
+            rails_version: '5.1'
             db: sqlite3
           - ruby_version: '2.6'
-            gemfile: gemfiles/rails_51.gemfile
+            rails_version: '5.1'
             db: postgresql
           - ruby_version: '2.6'
-            gemfile: gemfiles/rails_51.gemfile
+            rails_version: '5.1'
             db: mysql
 
           - ruby_version: '2.5'
-            gemfile: gemfiles/rails_50.gemfile
+            rails_version: '5.0'
             db: sqlite3
           - ruby_version: '2.5'
-            gemfile: gemfiles/rails_50.gemfile
+            rails_version: '5.0'
             db: postgresql
           - ruby_version: '2.5'
-            gemfile: gemfiles/rails_50.gemfile
+            rails_version: '5.0'
             db: mysql
 
           - ruby_version: '2.4'
-            gemfile: gemfiles/rails_42.gemfile
+            rails_version: '4.2'
             db: sqlite3
           - ruby_version: '2.4'
-            gemfile: gemfiles/rails_42.gemfile
+            rails_version: '4.2'
             db: postgresql
           - ruby_version: '2.4'
-            gemfile: gemfiles/rails_42.gemfile
+            rails_version: '4.2'
             db: mysql
 
     runs-on: ubuntu-18.04
 
     env:
-      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+      RAILS_VERSION: ${{ matrix.rails_version }}
       DB: ${{ matrix.db }}
 
     steps:
@@ -129,4 +118,4 @@ jobs:
         continue-on-error: ${{ (matrix.ruby_version == 'ruby-head') || (matrix.allow_failures == 'true') }}
 
       - run: bundle exec rake
-        continue-on-error: ${{ (matrix.ruby_version == 'ruby-head') || contains(matrix.gemfile, 'rails_edge') || (matrix.allow_failures == 'true') }}
+        continue-on-error: ${{ (matrix.ruby_version == 'ruby-head') || (matrix.rails_version == 'edge') || (matrix.allow_failures == 'true') }}
