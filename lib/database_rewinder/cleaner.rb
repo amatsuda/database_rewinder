@@ -48,6 +48,8 @@ module DatabaseRewinder
     def delete_all(ar_conn, tables, multiple: true)
       tables = tables & @only if @only.any?
       tables -= @except if @except.any?
+      # in order to avoid referential integrity error as much as possible
+      tables.reverse!
       return if tables.empty?
 
       if multiple && tables.many? && ar_conn.supports_multiple_statements?
