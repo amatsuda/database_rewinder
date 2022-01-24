@@ -25,7 +25,7 @@ if ENV['DB'] == 'postgresql'
   $do$
   BEGIN
     IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'database_rewinder_user') THEN
-      CREATE ROLE database_rewinder_user LOGIN PASSWORD 'postgres';
+      CREATE ROLE database_rewinder_user LOGIN PASSWORD 'postgres' createdb;
     END IF;
   END
   $do$
