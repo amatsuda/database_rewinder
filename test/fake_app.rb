@@ -18,6 +18,21 @@ module DatabaseRewinderTestApp
 end
 
 require 'active_record/base'
+
+if ENV['DB'] == 'postgresql'
+  ActiveRecord::Base.establish_connection(:superuser_connection).connection.execute(<<-CREATE_ROLE_SQL)
+  DO
+  $do$
+  BEGIN
+    IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'database_rewinder_user') THEN
+      CREATE ROLE database_rewinder_user LOGIN PASSWORD 'postgres';
+    END IF;
+  END
+  $do$
+CREATE_ROLE_SQL
+  ActiveRecord::Base.remove_connection(:superuser_connection)
+end
+
 ActiveRecord::Tasks::DatabaseTasks.root ||= Rails.root
 ActiveRecord::Tasks::DatabaseTasks.drop_current 'test'
 ActiveRecord::Tasks::DatabaseTasks.drop_current 'test2'
