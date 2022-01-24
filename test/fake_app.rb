@@ -30,7 +30,7 @@ if ENV['DB'] == 'postgresql'
   END
   $do$
 CREATE_ROLE_SQL
-  ActiveRecord::Base.remove_connection(:superuser_connection)
+  ActiveRecord::Base.remove_connection
 end
 
 ActiveRecord::Tasks::DatabaseTasks.root ||= Rails.root
