@@ -46,7 +46,7 @@ test:
 test2:
   adapter: postgresql
   host: localhost
-  username: postgres_user
+  username: database_rewinder_user
   password: postgres
   database: database_rewinder_test2
 <% end %>
