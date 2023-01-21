@@ -12,18 +12,18 @@ module DatabaseRewinder
         #TODO Use ADAPTER_NAME when we've dropped AR 4.1 support
         case self.class.name
         when 'ActiveRecord::ConnectionAdapters::PostgreSQLAdapter'
-          disable_referential_integrity { log(sql) { @connection.exec sql } }
+          disable_referential_integrity { log(sql) { (@raw_connection || @connection).exec sql } }
         when 'ActiveRecord::ConnectionAdapters::Mysql2Adapter'
-          if @connection.query_options[:connect_flags] & Mysql2::Client::MULTI_STATEMENTS != 0
+          if (@raw_connection || @connection).query_options[:connect_flags] & Mysql2::Client::MULTI_STATEMENTS != 0
             disable_referential_integrity do
-              _result = log(sql) { @connection.query sql }
-              while @connection.next_result
+              _result = log(sql) { (@raw_connection || @connection).query sql }
+              while (@raw_connection || @connection).next_result
                 # just to make sure that all queries are finished
-                _result = @connection.store_result
+                _result = (@raw_connection || @connection).store_result
               end
             end
           else
-            query_options = @connection.query_options.dup
+            query_options = (@raw_connection || @connection).query_options.dup
             query_options[:connect_flags] |= Mysql2::Client::MULTI_STATEMENTS
             # opens another connection to the DB
             client = Mysql2::Client.new query_options
@@ -40,7 +40,7 @@ module DatabaseRewinder
             end
           end
         when 'ActiveRecord::ConnectionAdapters::SQLite3Adapter'
-          disable_referential_integrity { log(sql) { @connection.execute_batch sql } }
+          disable_referential_integrity { log(sql) { (@raw_connection || @connection).execute_batch sql } }
         else
           raise 'Multiple deletion is not supported with the current database adapter.'
         end
