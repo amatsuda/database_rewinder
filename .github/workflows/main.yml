@@ -28,7 +28,7 @@ jobs:
       matrix:
         db: [sqlite3, postgresql, mysql]
         ruby_version: [ruby-head, '3.0', '2.7', '2.6']
-        rails_version: [edge, '7.0', '6.1', '6.0']
+        rails_version: [edge, '7.0', '6.1']
 
         exclude:
           - ruby_version: '2.6'
@@ -40,12 +40,26 @@ jobs:
           - ruby_version: ruby-head
             rails_version: '6.1'
 
-          - ruby_version: ruby-head
-            rails_version: '6.0'
-          - ruby_version: '3.0'
-            rails_version: '6.0'
-
         include:
+          - ruby_version: '2.7'
+            rails_version: '6.0'
+            db: sqlite3
+          - ruby_version: '2.7'
+            rails_version: '6.0'
+            db: postgresql
+          - ruby_version: '2.7'
+            rails_version: '6.0'
+            db: mysql
+          - ruby_version: '2.6'
+            rails_version: '6.0'
+            db: sqlite3
+          - ruby_version: '2.6'
+            rails_version: '6.0'
+            db: postgresql
+          - ruby_version: '2.6'
+            rails_version: '6.0'
+            db: mysql
+
           - ruby_version: '2.7'
             rails_version: '5.2'
             db: sqlite3
