@@ -209,16 +209,34 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
 
   if ActiveRecord::VERSION::MAJOR >= 4
     sub_test_case 'migrations' do
-      test '.clean_all should not touch AR::SchemaMigration' do
-        begin
-          ActiveRecord::SchemaMigration.create_table
-          ActiveRecord::SchemaMigration.create! version: '001'
-          DatabaseRewinder.clean_all
+      if ActiveRecord::VERSION::STRING >= '7.1'
+        test '.clean_all should not touch AR::SchemaMigration' do
+          schema_migration = ActiveRecord::SchemaMigration.new(ActiveRecord::Base.connection)
+          schema_migration.create_table
 
-          assert_equal 0, Foo.count
-          assert_equal 1, ActiveRecord::SchemaMigration.count
-        ensure
-          ActiveRecord::SchemaMigration.drop_table
+          begin
+            schema_migration.create_version '001'
+            DatabaseRewinder.clean_all
+
+            assert_equal 0, Foo.count
+            assert_equal 1, schema_migration.count
+          ensure
+            schema_migration.drop_table
+          end
+        end
+      else
+        test '.clean_all should not touch AR::SchemaMigration' do
+          ActiveRecord::SchemaMigration.create_table
+
+          begin
+            ActiveRecord::SchemaMigration.create! version: '001'
+            DatabaseRewinder.clean_all
+
+            assert_equal 0, Foo.count
+            assert_equal 1, ActiveRecord::SchemaMigration.count
+          ensure
+            ActiveRecord::SchemaMigration.drop_table
+          end
         end
       end
     end
