@@ -3,7 +3,7 @@
 require 'test_helper'
 
 class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
-  if ActiveRecord::VERSION::STRING >= '5'
+  if ActiveRecord::VERSION::MAJOR >= 5
     self.use_transactional_tests = false
   else
     self.use_transactional_fixtures = false
@@ -42,6 +42,54 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
         assert_cleaners_added ['ccc'] do
           DatabaseRewinder.database_configuration = {'ccc' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}
           DatabaseRewinder[:aho, connection: 'ccc']
+        end
+      end
+
+      if ActiveRecord::VERSION::MAJOR >= 6
+        sub_test_case 'with traditional configurations' do
+          test 'simply giving a connection name only' do
+            assert_cleaners_added ['aaa'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'aaa' => {'adapter' => 'sqlite3', 'database' => ':memory:'}})
+              DatabaseRewinder['aaa']
+            end
+          end
+
+          test 'giving a connection name via Hash with :connection key' do
+            assert_cleaners_added ['bbb'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'bbb' => {'adapter' => 'sqlite3', 'database' => ':memory:'}})
+              DatabaseRewinder[connection: 'bbb']
+            end
+          end
+
+          test 'the Cleaner compatible syntax' do
+            assert_cleaners_added ['ccc'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'ccc' => {'adapter' => 'sqlite3', 'database' => ':memory:'}})
+              DatabaseRewinder[:aho, connection: 'ccc']
+            end
+          end
+        end
+
+        sub_test_case 'with multiple database configurations' do
+          test 'simply giving a connection name only' do
+            assert_cleaners_added ['aaa'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'test' => {'aaa' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}})
+              DatabaseRewinder['aaa']
+            end
+          end
+
+          test 'giving a connection name via Hash with :connection key' do
+            assert_cleaners_added ['bbb'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'test' => {'bbb' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}})
+              DatabaseRewinder[connection: 'bbb']
+            end
+          end
+
+          test 'the Cleaner compatible syntax' do
+            assert_cleaners_added ['ccc'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'test' => {'ccc' => {'adapter' => 'sqlite3', 'database' => ':memory:'}}})
+              DatabaseRewinder[:aho, connection: 'ccc']
+            end
+          end
         end
       end
     end
@@ -87,7 +135,7 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
         assert_equal ['bars'], @cleaner.inserted_tables
       end
 
-      if ActiveRecord::VERSION::STRING >= '6'
+      if ActiveRecord::VERSION::MAJOR >= 6
         test 'insert_all' do
           Bar.insert_all! [{name: 'bar1'}]
           assert_equal ['bars'], @cleaner.inserted_tables
@@ -159,18 +207,36 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
     assert_equal 0, Bar.count
   end
 
-  if ActiveRecord::VERSION::STRING >= '4'
+  if ActiveRecord::VERSION::MAJOR >= 4
     sub_test_case 'migrations' do
-      test '.clean_all should not touch AR::SchemaMigration' do
-        begin
-          ActiveRecord::SchemaMigration.create_table
-          ActiveRecord::SchemaMigration.create! version: '001'
-          DatabaseRewinder.clean_all
+      if ActiveRecord::VERSION::STRING >= '7.1'
+        test '.clean_all should not touch AR::SchemaMigration' do
+          schema_migration = ActiveRecord::SchemaMigration.new(ActiveRecord::Base.connection)
+          schema_migration.create_table
 
-          assert_equal 0, Foo.count
-          assert_equal 1, ActiveRecord::SchemaMigration.count
-        ensure
-          ActiveRecord::SchemaMigration.drop_table
+          begin
+            schema_migration.create_version '001'
+            DatabaseRewinder.clean_all
+
+            assert_equal 0, Foo.count
+            assert_equal 1, schema_migration.count
+          ensure
+            schema_migration.drop_table
+          end
+        end
+      else
+        test '.clean_all should not touch AR::SchemaMigration' do
+          ActiveRecord::SchemaMigration.create_table
+
+          begin
+            ActiveRecord::SchemaMigration.create! version: '001'
+            DatabaseRewinder.clean_all
+
+            assert_equal 0, Foo.count
+            assert_equal 1, ActiveRecord::SchemaMigration.count
+          ensure
+            ActiveRecord::SchemaMigration.drop_table
+          end
         end
       end
     end

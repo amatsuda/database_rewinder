@@ -15,30 +15,38 @@ test2:
 <% when 'mysql' %>
 test:
   adapter: mysql2
-  host: localhost
+  host: 127.0.0.1
   username: root
   password:
   database: database_rewinder_test
 
 test2:
   adapter: mysql2
-  host: localhost
+  host: 127.0.0.1
   username: root
   password:
   database: database_rewinder_test2
 
 <% when 'postgresql' %>
+superuser_connection:
+  adapter: postgresql
+  host: localhost
+  # this user has to be a superuser for the tests to pass
+  username: postgres
+  password: postgres
+  database: postgres
+
 test:
   adapter: postgresql
   host: localhost
-  username: postgres
-  password:
+  username: database_rewinder_user
+  password: postgres
   database: database_rewinder_test
 
 test2:
   adapter: postgresql
   host: localhost
-  username: postgres
-  password:
+  username: database_rewinder_user
+  password: postgres
   database: database_rewinder_test2
 <% end %>

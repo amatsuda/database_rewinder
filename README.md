@@ -1,6 +1,6 @@
 # DatabaseRewinder
 
-[![Build Status](https://travis-ci.org/amatsuda/database_rewinder.svg)](http://travis-ci.org/amatsuda/database\_rewinder)
+[![Build Status](https://github.com/amatsuda/database_rewinder/actions/workflows/main.yml/badge.svg)](https://github.com/amatsuda/database_rewinder/actions)
 
 database\_rewinder is a minimalist's tiny and ultra-fast database cleaner.
 
@@ -23,9 +23,9 @@ This strategy was originally devised and implemented by Shingo Morita (@eudoxa) 
 
 ## Supported versions
 
-* ActiveRecord 4.0, 4.1, 4.2, 5.0, 5.1, 5.2, 6.0 (edge)
+* ActiveRecord 4.2, 5.0, 5.1, 5.2, 6.0, 6.1, 7.0 (edge)
 
-* Ruby 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6 (trunk)
+* Ruby 2.4, 2.5, 2.6, 2.7, 3.0, 3.1 (trunk)
 
 ## Installation
 
@@ -98,7 +98,7 @@ In cases of this situation, bundle database\_rewinder and add the following conf
 
 ```ruby
 RSpec.configure do |config|
-  config.use_transactional_examples = false
+  config.use_transactional_tests = false
 
   ...
 end

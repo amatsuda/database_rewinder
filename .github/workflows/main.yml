@@ -1,0 +1,133 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        ports:
+          - 3306:3306
+        options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 10
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        db: [sqlite3, postgresql, mysql]
+        ruby_version: [ruby-head, '3.2', '3.1', '3.0', '2.7', '2.6']
+        rails_version: [edge '7.1', '7.0', '6.1']
+
+        exclude:
+          - ruby_version: '2.6'
+            rails_version: edge
+
+          - ruby_version: '2.6'
+            rails_version: '7.1'
+
+          - ruby_version: '2.6'
+            rails_version: '7.0'
+
+          - ruby_version: ruby-head
+            rails_version: '6.1'
+
+        include:
+          - ruby_version: '2.7'
+            rails_version: '6.0'
+            db: sqlite3
+          - ruby_version: '2.7'
+            rails_version: '6.0'
+            db: postgresql
+          - ruby_version: '2.7'
+            rails_version: '6.0'
+            db: mysql
+          - ruby_version: '2.6'
+            rails_version: '6.0'
+            db: sqlite3
+          - ruby_version: '2.6'
+            rails_version: '6.0'
+            db: postgresql
+          - ruby_version: '2.6'
+            rails_version: '6.0'
+            db: mysql
+
+          - ruby_version: '2.7'
+            rails_version: '5.2'
+            db: sqlite3
+          - ruby_version: '2.7'
+            rails_version: '5.2'
+            db: postgresql
+          - ruby_version: '2.7'
+            rails_version: '5.2'
+            db: mysql
+          - ruby_version: '2.4'
+            rails_version: '5.2'
+            db: sqlite3
+          - ruby_version: '2.4'
+            rails_version: '5.2'
+            db: postgresql
+          - ruby_version: '2.4'
+            rails_version: '5.2'
+            db: mysql
+
+          - ruby_version: '2.6'
+            rails_version: '5.1'
+            db: sqlite3
+          - ruby_version: '2.6'
+            rails_version: '5.1'
+            db: postgresql
+          - ruby_version: '2.6'
+            rails_version: '5.1'
+            db: mysql
+
+          - ruby_version: '2.5'
+            rails_version: '5.0'
+            db: sqlite3
+          - ruby_version: '2.5'
+            rails_version: '5.0'
+            db: postgresql
+          - ruby_version: '2.5'
+            rails_version: '5.0'
+            db: mysql
+
+          - ruby_version: '2.4'
+            rails_version: '4.2'
+            db: sqlite3
+          - ruby_version: '2.4'
+            rails_version: '4.2'
+            db: postgresql
+          - ruby_version: '2.4'
+            rails_version: '4.2'
+            db: mysql
+
+    runs-on: ubuntu-20.04
+
+    env:
+      RAILS_VERSION: ${{ matrix.rails_version }}
+      DB: ${{ matrix.db }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          rubygems: ${{ matrix.ruby_version < '2.6' && 'default' || 'latest' }}
+          bundler: ${{ startsWith(matrix.rails_version, '4.') && '1' || 'latest' }}
+          bundler-cache: true
+        continue-on-error: ${{ (matrix.ruby_version == 'ruby-head') || (matrix.allow_failures == 'true') }}
+
+      - run: bundle exec rake
+        continue-on-error: ${{ (matrix.ruby_version == 'ruby-head') || (matrix.rails_version == 'edge') || (matrix.allow_failures == 'true') }}

@@ -6,10 +6,10 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "database_rewinder"
-  spec.version       = '0.9.4'
+  spec.version       = '0.9.8'
   spec.authors       = ["Akira Matsuda"]
   spec.email         = ["ronnie@dio.jp"]
-  spec.description   = "A minimalist's tiny and ultra-fast database cleaner"
+  spec.description   = "A minimalist's tiny and ultra-fast database cleaner for Active Record"
   spec.summary       = "A minimalist's tiny and ultra-fast database cleaner"
   spec.homepage      = 'https://github.com/amatsuda/database_rewinder'
   spec.license       = "MIT"
@@ -23,8 +23,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency 'test-unit-rails'
   spec.add_development_dependency 'rails'
-  spec.add_development_dependency 'sqlite3'
-  spec.add_development_dependency 'mysql2'
-  spec.add_development_dependency 'pg'
   spec.required_ruby_version = '>= 2.0.0'
 end

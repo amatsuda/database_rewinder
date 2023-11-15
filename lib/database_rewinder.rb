@@ -16,20 +16,9 @@ module DatabaseRewinder
     end
 
     def create_cleaner(connection_name)
-      config = get_connection(connection_name) or raise %Q[Database configuration named "#{connection_name}" is not configured.]
+      config = configuration_hash_for(connection_name) or raise %Q[Database configuration named "#{connection_name}" is not configured.]
 
       Cleaner.new(config: config, connection_name: connection_name, only: @only, except: @except).tap {|c| @cleaners << c}
-    end
-
-    def get_connection(connection_name)
-      return database_configuration[connection_name] unless database_configuration.respond_to?(:configs_for)
-
-      config_hash = database_configuration.configs_for(env_name: connection_name).first
-      if config_hash.respond_to?(:configuration_hash)
-        config_hash.configuration_hash
-      else
-        database_configuration[connection_name]
-      end
     end
 
     def [](connection)
@@ -87,23 +76,59 @@ module DatabaseRewinder
       cache_key = get_cache_key(connection.pool)
       #NOTE connection.tables warns on AR 5 with some adapters
       tables = ActiveSupport::Deprecation.silence { connection.tables }
+      schema_migraion_table_name =
+        if ActiveRecord::SchemaMigration.respond_to?(:table_name)
+          ActiveRecord::SchemaMigration.table_name
+        else
+          ActiveRecord::SchemaMigration.new(connection).table_name  # AR >= 7.1
+        end
       @table_names_cache[cache_key] ||= tables.reject do |t|
-        (t == ActiveRecord::SchemaMigration.table_name) ||
+        (t == schema_migraion_table_name) ||
         (ActiveRecord::Base.respond_to?(:internal_metadata_table_name) && (t == ActiveRecord::Base.internal_metadata_table_name))
       end
     end
 
     def get_cache_key(connection_pool)
       if connection_pool.respond_to?(:db_config) # ActiveRecord >= 6.1
-        connection_pool.db_config.config
+        connection_pool.db_config.configuration_hash
       else
         connection_pool.spec.config
       end
     end
+
+    def configuration_hash_for(connection_name)
+      if database_configuration.respond_to?(:configs_for)
+        hash_config = database_configuration_for(connection_name)
+        if hash_config
+          if hash_config.respond_to?(:configuration_hash)
+            hash_config.configuration_hash.stringify_keys
+          else
+            hash_config.config
+          end
+        end
+      else
+        database_configuration[connection_name]
+      end
+    end
+
+    def database_configuration_for(connection_name)
+      traditional_configuration_for(connection_name) || multiple_database_configuration_for(connection_name)
+    end
+
+    def traditional_configuration_for(connection_name)
+      database_configuration.configs_for(env_name: connection_name).first
+    end
+
+    def multiple_database_configuration_for(connection_name)
+      if (ActiveRecord::VERSION::MAJOR >= 7) || ((ActiveRecord::VERSION::MAJOR >= 6) && (ActiveRecord::VERSION::MINOR >= 1))
+        database_configuration.configs_for(name: connection_name)
+      else
+        database_configuration.configs_for(spec_name: connection_name)
+      end
+    end
   end
 
-  private_class_method :get_connection
-  private_class_method :get_cache_key
+  private_class_method :configuration_hash_for, :get_cache_key
 end
 
 begin
