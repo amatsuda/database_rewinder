@@ -36,6 +36,11 @@ module DatabaseRewinder
           DatabaseRewinder.record_inserted_table self, sql
           super
         end
+
+        def internal_exec_query(sql, *, **)
+          DatabaseRewinder.record_inserted_table self, sql
+          super
+        end
       end
     end
 
