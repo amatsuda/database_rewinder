@@ -32,7 +32,9 @@ end
 
 # Already loaded adapters (SQLite3Adapter, PostgreSQLAdapter, AbstractMysqlAdapter, and possibly another third party adapter)
 ::ActiveRecord::ConnectionAdapters::AbstractAdapter.descendants.each do |adapter|
-  # Note: this would only prepend on AbstractMysqlAdapter and not on Mysql2Adapter because ```Mysql2Adapter < InsertRecorder``` becomes true immediately after AbstractMysqlAdapter prepends InsertRecorder
+  # In order not to touch AbstractMysqlAdapter thing, but to surely patch the concrete classes
+  next if adapter.descendants.any?
+
   adapter.send :prepend, DatabaseRewinder::InsertRecorder unless adapter < DatabaseRewinder::InsertRecorder
 end
 
