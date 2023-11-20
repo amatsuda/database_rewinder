@@ -22,7 +22,7 @@ module DatabaseRewinder
     end
 
     def [](connection)
-      @cleaners.detect {|c| c.connection_name == connection} || create_cleaner(connection)
+      @cleaners&.detect {|c| c.connection_name == connection} || create_cleaner(connection)
     end
 
     def all=(v)
