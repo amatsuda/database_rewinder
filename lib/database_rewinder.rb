@@ -22,6 +22,8 @@ module DatabaseRewinder
     end
 
     def [](connection)
+      init unless defined? @cleaners
+
       @cleaners.detect {|c| c.connection_name == connection} || create_cleaner(connection)
     end
 
