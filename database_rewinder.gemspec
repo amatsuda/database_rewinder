@@ -6,7 +6,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "database_rewinder"
-  spec.version       = '0.9.9'
+  spec.version       = '1.0.0'
   spec.authors       = ["Akira Matsuda"]
   spec.email         = ["ronnie@dio.jp"]
   spec.description   = "A minimalist's tiny and ultra-fast database cleaner for Active Record"
