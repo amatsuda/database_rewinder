@@ -78,10 +78,10 @@ module DatabaseRewinder
       cache_key = get_cache_key(connection.pool)
       #NOTE connection.tables warns on AR 5 with some adapters
       tables =
-        if Rails.application.respond_to?(:deprecators) # AR >= 7.1
-          Rails.application.deprecators.silence { connection.tables }
-        else
+        if ActiveRecord::VERSION::MAJOR == 5 && ActiveRecord::VERSION::MINOR == 0
           ActiveSupport::Deprecation.silence { connection.tables }
+        else
+          connection.tables
         end
       schema_migraion_table_name =
         if ActiveRecord::SchemaMigration.respond_to?(:table_name)
