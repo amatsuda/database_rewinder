@@ -8,10 +8,6 @@ module DatabaseRewinder
         %w(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter ActiveRecord::ConnectionAdapters::Mysql2Adapter ActiveRecord::ConnectionAdapters::SQLite3Adapter).include? self.class.name
       end
 
-      def raw_connection_or_connection
-        defined?(@raw_connection) ? @raw_connection : @connection
-      end
-
       def execute_multiple(sql)
         #TODO Use ADAPTER_NAME when we've dropped AR 4.1 support
         case self.class.name
@@ -48,6 +44,12 @@ module DatabaseRewinder
         else
           raise 'Multiple deletion is not supported with the current database adapter.'
         end
+      end
+
+      private
+
+      def raw_connection_or_connection
+        defined?(@raw_connection) ? @raw_connection : @connection
       end
     end
   end
