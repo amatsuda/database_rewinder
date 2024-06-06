@@ -27,6 +27,21 @@ test2:
   password:
   database: database_rewinder_test2
 
+<% when 'trilogy' %>
+test:
+  adapter: trilogy
+  host: 127.0.0.1
+  username: root
+  password:
+  database: database_rewinder_test
+
+test2:
+  adapter: trilogy
+  host: 127.0.0.1
+  username: root
+  password:
+  database: database_rewinder_test2
+
 <% when 'postgresql' %>
 superuser_connection:
   adapter: postgresql

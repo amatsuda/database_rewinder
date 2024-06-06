@@ -4,7 +4,7 @@ module DatabaseRewinder
   module InsertRecorder
     # This method actually no longer has to be a `prepended` hook because InsertRecorder is a module without a direct method now, but still doing this just for compatibility
     def self.prepended(mod)
-      [:execute, :exec_query, :internal_exec_query].each do |method_name|
+      [:execute, :exec_insert, :exec_query, :internal_exec_query].each do |method_name|
         if mod.instance_methods.include?(method_name) && (meth = mod.instance_method(method_name))
           method_body = if meth.parameters.any? {|type, _name| [:key, :keyreq, :keyrest].include? type }
             <<-RUBY

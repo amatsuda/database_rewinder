@@ -26,13 +26,17 @@ jobs:
       fail-fast: false
 
       matrix:
-        db: [sqlite3, postgresql, mysql]
+        db: [sqlite3, postgresql, mysql, trilogy]
         ruby_version: [ruby-head, '3.3', '3.2', '3.1']
         rails_version: [edge, '7.1', '7.0', '6.1']
 
         exclude:
           - ruby_version: ruby-head
             rails_version: '6.1'
+          - rails_version: '7.0'
+            db: trilogy
+          - rails_version: '6.1'
+            db: trilogy
 
         include:
           - ruby_version: '3.0'
