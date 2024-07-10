@@ -32,6 +32,8 @@ when 'mysql'
   else
     gem 'mysql2'
   end
+when 'trilogy'
+  gem 'trilogy'
 else
   if rails_version <= '5.0'
     gem 'sqlite3', '< 1.4'
