@@ -31,5 +31,11 @@ when 'mysql'
     gem 'mysql2'
   end
 else
-  gem 'sqlite3', rails_version <= '5.0' ? '< 1.4' : '>= 1.4'
+  if rails_version <= '5.0'
+    gem 'sqlite3', '< 1.4'
+  elsif (rails_version <= '8') || (RUBY_VERSION < '3')
+    gem 'sqlite3', '< 2'
+  else
+    gem 'sqlite3'
+  end
 end
