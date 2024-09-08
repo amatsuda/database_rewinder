@@ -75,7 +75,7 @@ module DatabaseRewinder
     end
 
     def borrow_connection(pool)
-      if ActiveRecord::VERSION::STRING >= '7.2'
+      if ActiveRecord.gem_version >= '7.2'
         pool.lease_connection
       else
         pool.connection

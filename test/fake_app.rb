@@ -22,7 +22,7 @@ require 'active_record/base'
 def borrow_connection(name)
   connection_handler = ActiveRecord::Base.establish_connection(name)
 
-  if ActiveRecord::VERSION::STRING >= '7.2'
+  if ActiveRecord.gem_version >= '7.2'
     connection_handler.lease_connection
   else
     connection_handler.connection

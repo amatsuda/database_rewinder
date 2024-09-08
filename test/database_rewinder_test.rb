@@ -211,7 +211,7 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
     sub_test_case 'migrations' do
       if ActiveRecord::VERSION::STRING >= '7.1'
         test '.clean_all should not touch AR::SchemaMigration' do
-          schema_migration = if ActiveRecord::VERSION::MINOR >= 2
+          schema_migration = if ActiveRecord.gem_version >= '7.2'
             ActiveRecord::SchemaMigration.new(ActiveRecord::Base.connection_pool)
           else
             ActiveRecord::SchemaMigration.new(ActiveRecord::Base.connection)
