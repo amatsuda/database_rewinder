@@ -19,8 +19,18 @@ end
 
 require 'active_record/base'
 
+def borrow_connection(name)
+  connection_handler = ActiveRecord::Base.establish_connection(name)
+
+  if ActiveRecord.gem_version >= '7.2'
+    connection_handler.lease_connection
+  else
+    connection_handler.connection
+  end
+end
+
 if ENV['DB'] == 'postgresql'
-  ActiveRecord::Base.establish_connection(:superuser_connection).connection.execute(<<-CREATE_ROLE_SQL)
+  borrow_connection(:superuser_connection).execute(<<-CREATE_ROLE_SQL)
   DO
   $do$
   BEGIN
@@ -47,6 +57,7 @@ class Quu < ActiveRecord::Base
   establish_connection :test2
 end
 
+
 # migrations
 class CreateAllTables < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[5.0] : ActiveRecord::Migration
   def self.up
@@ -55,7 +66,7 @@ class CreateAllTables < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migrat
     create_table(:foos) {|t| t.string :name; t.references :bar, foreign_key: true }
     create_table(:bazs) {|t| t.string :name }
 
-    test2_connection = ActiveRecord::Base.establish_connection(:test2).connection
+    test2_connection = borrow_connection(:test2)
     test2_connection.create_table(:quus) {|t| t.string :name }
     ActiveRecord::Base.establish_connection :test
   end
@@ -65,7 +76,7 @@ class CreateAllTables < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migrat
     drop_table(:bars) {|t| t.string :name }
     drop_table(:bazs) {|t| t.string :name }
 
-    test2_connection = ActiveRecord::Base.establish_connection(:test2).connection
+    test2_connection = borrow_connection(:test2)
     test2_connection.drop_table :quus
     ActiveRecord::Base.establish_connection :test
   end
