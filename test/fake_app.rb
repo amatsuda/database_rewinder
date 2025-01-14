@@ -4,6 +4,18 @@ ENV['DB'] ||= 'sqlite3'
 require 'active_record/railtie'
 
 module DatabaseRewinderTestApp
+  class << self
+    def borrow_connection(name)
+      connection_handler = ActiveRecord::Base.establish_connection(name)
+
+      if ActiveRecord.gem_version >= '7.2'
+        connection_handler.lease_connection
+      else
+        connection_handler.connection
+      end
+    end
+  end
+
   Application = Class.new(Rails::Application) do
     # Rais.root
     config.root = __dir__
@@ -19,18 +31,8 @@ end
 
 require 'active_record/base'
 
-def borrow_connection(name)
-  connection_handler = ActiveRecord::Base.establish_connection(name)
-
-  if ActiveRecord.gem_version >= '7.2'
-    connection_handler.lease_connection
-  else
-    connection_handler.connection
-  end
-end
-
 if ENV['DB'] == 'postgresql'
-  borrow_connection(:superuser_connection).execute(<<-CREATE_ROLE_SQL)
+  DatabaseRewinderTestApp.borrow_connection(:superuser_connection).execute(<<-CREATE_ROLE_SQL)
   DO
   $do$
   BEGIN
@@ -66,7 +68,7 @@ class CreateAllTables < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migrat
     create_table(:foos) {|t| t.string :name; t.references :bar, foreign_key: true }
     create_table(:bazs) {|t| t.string :name }
 
-    test2_connection = borrow_connection(:test2)
+    test2_connection = DatabaseRewinderTestApp.borrow_connection(:test2)
     test2_connection.create_table(:quus) {|t| t.string :name }
     ActiveRecord::Base.establish_connection :test
   end
@@ -76,7 +78,7 @@ class CreateAllTables < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migrat
     drop_table(:bars) {|t| t.string :name }
     drop_table(:bazs) {|t| t.string :name }
 
-    test2_connection = borrow_connection(:test2)
+    test2_connection = DatabaseRewinderTestApp.borrow_connection(:test2)
     test2_connection.drop_table :quus
     ActiveRecord::Base.establish_connection :test
   end
