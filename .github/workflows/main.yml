@@ -28,7 +28,7 @@ jobs:
       matrix:
         db: [sqlite3, postgresql, mysql, trilogy]
         ruby_version: [ruby-head, '3.3', '3.2', '3.1']
-        rails_version: [edge, '7.1', '7.0', '6.1']
+        rails_version: [edge, '8.0', '7.1', '7.0', '6.1']
 
         exclude:
           - ruby_version: ruby-head
