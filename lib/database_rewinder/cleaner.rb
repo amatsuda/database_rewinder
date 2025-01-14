@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+require_relative 'lease_connection_compat'
 require_relative 'multiple_statements_executor'
 
+using DatabaseRewinder::LeaseConnectionCompat
 using DatabaseRewinder::MultipleStatementsExecutor
 
 module DatabaseRewinder

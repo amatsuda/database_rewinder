@@ -3,6 +3,9 @@
 ENV['DB'] ||= 'sqlite3'
 require 'active_record/railtie'
 
+require_relative '../lib/database_rewinder/lease_connection_compat'
+using DatabaseRewinder::LeaseConnectionCompat
+
 module DatabaseRewinderTestApp
   Application = Class.new(Rails::Application) do
     # Rais.root
