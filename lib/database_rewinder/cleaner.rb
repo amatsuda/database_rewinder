@@ -19,6 +19,10 @@ module DatabaseRewinder
       config['database']
     end
 
+    def host
+      config['host']
+    end
+
     def clean(multiple: true)
       return if !pool || inserted_tables.empty?
 
