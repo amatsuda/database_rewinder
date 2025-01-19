@@ -18,6 +18,8 @@ gem 'loofah', RUBY_VERSION < '2.5' ? '< 2.21.0' : '>= 0'
 gem 'selenium-webdriver'
 gem 'bigdecimal', RUBY_VERSION < '2.7' ? '< 2' : '>= 0'
 gem 'mutex_m' if RUBY_VERSION >= '3.3'
+gem 'benchmark' if RUBY_VERSION >= '3.5'
+
 
 rails_version = ENV['RAILS_VERSION'] || '∞'
 
