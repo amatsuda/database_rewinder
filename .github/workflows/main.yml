@@ -154,7 +154,7 @@ jobs:
             rails_version: '4.2'
             db: mysql
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     env:
       RAILS_VERSION: ${{ matrix.rails_version }}
