@@ -92,6 +92,24 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
           end
         end
       end
+
+      if ActiveRecord::VERSION::MAJOR >= 7
+        sub_test_case 'when dealing with hidden databases' do
+          test 'configuring via database_tasks' do
+            assert_cleaners_added ['aaa'] do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'aaa' => {'adapter' => 'sqlite3', 'database' => ':memory:', 'database_tasks' => false}})
+              DatabaseRewinder['aaa']
+            end
+          end
+
+          test 'configuring via replica' do
+            assert_raises(RuntimeError, 'Database configuration named "bbb" is not configured.') do
+              DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new({'bbb' => {'adapter' => 'sqlite3', 'database' => ':memory:', 'replica' => true}})
+              DatabaseRewinder['bbb']
+            end
+          end
+        end
+      end
     end
 
     test 'for connecting to multiple databases' do
