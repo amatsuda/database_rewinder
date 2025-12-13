@@ -7,8 +7,11 @@ module DatabaseRewinder
     # Set your DB configuration here if you'd like to use something else than the AR configuration
     attr_writer :database_configuration
 
+    # Set to true to include hidden database configurations (those with database_tasks: false)
+    attr_accessor :include_hidden
+
     def init
-      @cleaners, @table_names_cache, @clean_all, @only, @except, @database_configuration = [], {}, false
+      @cleaners, @table_names_cache, @clean_all, @only, @except, @database_configuration, @include_hidden = [], {}, false, nil, nil, nil, false
     end
 
     def database_configuration
@@ -40,13 +43,20 @@ module DatabaseRewinder
       config = connection.instance_variable_get(:'@config')
       database = config[:database]
       host = config[:host]
+      schema_search_path = config[:schema_search_path]
       #NOTE What's the best way to get the app dir besides Rails.root? I know Dir.pwd here might not be the right solution, but it should work in most cases...
       root_dir = defined?(Rails) && Rails.respond_to?(:root) ? Rails.root : Dir.pwd
       cleaner = cleaners.detect do |c|
         if (config[:adapter] == 'sqlite3') && (config[:database] != ':memory:')
           File.expand_path(c.db, root_dir) == File.expand_path(database, root_dir)
         else
-          c.db == database && c.host == host
+          # For PostgreSQL with schema_search_path, match by schema as well as db/host
+          cleaner_schema_search_path = c.config['schema_search_path']
+          if schema_search_path || cleaner_schema_search_path
+            c.db == database && c.host == host && cleaner_schema_search_path == schema_search_path
+          else
+            c.db == database && c.host == host
+          end
         end
       end or return
 
@@ -129,9 +139,9 @@ module DatabaseRewinder
 
     def multiple_database_configuration_for(connection_name)
       if (ActiveRecord::VERSION::MAJOR >= 7) || ((ActiveRecord::VERSION::MAJOR >= 6) && (ActiveRecord::VERSION::MINOR >= 1))
-        database_configuration.configs_for(name: connection_name)
+        database_configuration.configs_for(name: connection_name, include_hidden: include_hidden)
       else
-        database_configuration.configs_for(spec_name: connection_name)
+        database_configuration.configs_for(spec_name: connection_name, include_hidden: include_hidden)
       end
     end
   end
