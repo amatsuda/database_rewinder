@@ -290,6 +290,118 @@ class DatabaseRewinder::DatabaseRewinderTest < ActiveSupport::TestCase
     end
   end
 
+  sub_test_case '.include_hidden' do
+    teardown do
+      DatabaseRewinder.database_configuration = nil
+      DatabaseRewinder.include_hidden = false
+    end
+
+    test 'defaults to false' do
+      assert_equal false, DatabaseRewinder.include_hidden
+    end
+
+    test 'can be set to true' do
+      DatabaseRewinder.include_hidden = true
+      assert_equal true, DatabaseRewinder.include_hidden
+    end
+
+    test 'passes include_hidden to configs_for when looking up database configurations' do
+      hidden_db_config = {'test' => {'hidden_db' => {'adapter' => 'sqlite3', 'database' => ':memory:', 'database_tasks' => false}}}
+      DatabaseRewinder.database_configuration = ActiveRecord::DatabaseConfigurations.new(hidden_db_config)
+
+      assert_raises(RuntimeError, 'Database configuration named "hidden_db" is not configured.') do
+        DatabaseRewinder['hidden_db']
+      end
+
+      DatabaseRewinder.include_hidden = true
+
+      cleaner = DatabaseRewinder['hidden_db']
+      assert_equal 'hidden_db', cleaner.connection_name
+    end
+  end
+
+  sub_test_case '.record_inserted_table with schema_search_path' do
+    setup do
+      DatabaseRewinder.init
+    end
+
+    teardown do
+      DatabaseRewinder.database_configuration = nil
+    end
+
+    test 'matches cleaner by schema_search_path when present' do
+      cleaner1 = DatabaseRewinder::Cleaner.new(
+        config: {'database' => 'testdb', 'host' => 'localhost', 'schema_search_path' => 'public'},
+        connection_name: 'test_public',
+        only: nil,
+        except: nil
+      )
+      cleaner2 = DatabaseRewinder::Cleaner.new(
+        config: {'database' => 'testdb', 'host' => 'localhost', 'schema_search_path' => 'other_schema'},
+        connection_name: 'test_other',
+        only: nil,
+        except: nil
+      )
+      DatabaseRewinder.instance_variable_set(:@cleaners, [cleaner1, cleaner2])
+
+      connection = Struct.new(:pool).new(nil)
+      connection.instance_variable_set(:@config, {
+        adapter: 'postgresql',
+        database: 'testdb',
+        host: 'localhost',
+        schema_search_path: 'other_schema'
+      })
+
+      DatabaseRewinder.record_inserted_table(connection, 'INSERT INTO foos (name) VALUES (?)')
+
+      assert_equal [], cleaner1.inserted_tables
+      assert_equal ['foos'], cleaner2.inserted_tables
+    end
+
+    test 'matches cleaner without schema_search_path when neither have it' do
+      cleaner = DatabaseRewinder::Cleaner.new(
+        config: {'database' => 'testdb', 'host' => 'localhost'},
+        connection_name: 'test',
+        only: nil,
+        except: nil
+      )
+      DatabaseRewinder.instance_variable_set(:@cleaners, [cleaner])
+
+      connection = Struct.new(:pool).new(nil)
+      connection.instance_variable_set(:@config, {
+        adapter: 'postgresql',
+        database: 'testdb',
+        host: 'localhost'
+      })
+
+      DatabaseRewinder.record_inserted_table(connection, 'INSERT INTO bars (name) VALUES (?)')
+
+      assert_equal ['bars'], cleaner.inserted_tables
+    end
+
+    test 'does not match cleaner when schema_search_path differs' do
+      cleaner = DatabaseRewinder::Cleaner.new(
+        config: {'database' => 'testdb', 'host' => 'localhost', 'schema_search_path' => 'public'},
+        connection_name: 'test',
+        only: nil,
+        except: nil
+      )
+      DatabaseRewinder.instance_variable_set(:@cleaners, [cleaner])
+
+      connection = Struct.new(:pool).new(nil)
+      connection.instance_variable_set(:@config, {
+        adapter: 'postgresql',
+        database: 'testdb',
+        host: 'localhost',
+        schema_search_path: 'other_schema'
+      })
+
+      DatabaseRewinder.record_inserted_table(connection, 'INSERT INTO foos (name) VALUES (?)')
+
+      assert_equal [], cleaner.inserted_tables
+    end
+  end
+
   sub_test_case '.strategy=' do
     sub_test_case 'call first with options' do
       setup do
