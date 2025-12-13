@@ -51,9 +51,9 @@ module DatabaseRewinder
           File.expand_path(c.db, root_dir) == File.expand_path(database, root_dir)
         else
           # For PostgreSQL with schema_search_path, match by schema as well as db/host
-          cleaner_schema = c.config['schema_search_path']
-          if schema_search_path || cleaner_schema
-            c.db == database && c.host == host && cleaner_schema == schema_search_path
+          cleaner_schema_search_path = c.config['schema_search_path']
+          if schema_search_path || cleaner_schema_search_path
+            c.db == database && c.host == host && cleaner_schema_search_path == schema_search_path
           else
             c.db == database && c.host == host
           end
