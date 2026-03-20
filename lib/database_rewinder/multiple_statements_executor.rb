@@ -25,6 +25,9 @@ module DatabaseRewinder
           else
             query_options = raw_connection_or_connection.query_options.dup
             query_options[:connect_flags] |= Mysql2::Client::MULTI_STATEMENTS
+
+            query_options[:password] = @connection_parameters[:password] unless query_options[:password]
+
             # opens another connection to the DB
             client = Mysql2::Client.new query_options
             begin
