@@ -26,11 +26,7 @@ module DatabaseRewinder
             query_options = raw_connection_or_connection.query_options.dup
             query_options[:connect_flags] |= Mysql2::Client::MULTI_STATEMENTS
 
-            db_config = ActiveRecord::Base.connection_db_config.configuration_hash
-            query_options[:host] = db_config[:host] if db_config[:host]
-            query_options[:username] = db_config[:username] if db_config[:username]
-            query_options[:password] = db_config[:password] if db_config[:password]
-            query_options[:database] = db_config[:database] if db_config[:database]
+            query_options[:password] = @connection_parameters[:password] unless query_options[:password]
 
             # opens another connection to the DB
             client = Mysql2::Client.new query_options
